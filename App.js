@@ -4,10 +4,11 @@ import Splash from './js/Splash';
 import { ViroARSceneNavigator } from 'react-viro';
 
 const ARnav = require('./js/ARnav');
+const ARloc = require('./js/PortalWithSidebar');
 
 class App extends Component {
   state = {
-    page: 'splash',
+    page: 'ARloc',
     subpage: null
   };
 
@@ -23,8 +24,8 @@ class App extends Component {
         return <Splash changePage={this.changePage} />;
       case 'ARnav':
         return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'GravityAndHeading'} />;
-      // case 'ARloc':
-      //   return <ARloc changePage={this.changePage} />;
+      case 'ARloc':
+        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'GravityAndHeading'} />;
       default:
         return <Splash changePage={this.changePage} />;
     }
