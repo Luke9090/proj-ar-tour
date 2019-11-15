@@ -6,7 +6,7 @@ function Splash({ changePage }) {
     <View style={styles.container}>
       <ImageBackground style={styles.background} source={require('../imgs/concert-background.jpg')}>
         <Text style={styles.header}>Manchester Music Tour</Text>
-        <Text style={styles.text}>Welcome to the music tour of Manchester. I will plot a route for you based on your current location.</Text>
+        <Text style={styles.text}>Welcome to the music tour of Manchester. Hit 'Start Tour' to see an overview of locations available to visit.</Text>
         <View style={styles.container2}>
           <TouchableOpacity
             style={styles.button}
