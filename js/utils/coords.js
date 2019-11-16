@@ -11,4 +11,18 @@ coords.latLonToMerc = ([lat, lon]) => {
   return [x, z];
 };
 
+coords.arPosFromMercs = (currLoc, modelLoc) => {
+  const x = modelLoc[0] - currLoc[0];
+  const y = 0;
+  const z = modelLoc[1] - currLoc[1];
+  return [x, y, z];
+};
+
+coords.distanceToModel = (currLoc, modelLoc) => {
+  const deltaX = modelLoc[0] - currLoc[0];
+  const y = 0;
+  const deltaY = modelLoc[1] - currLoc[1];
+  return (deltaX ** 2 + deltaY ** 2) ** 0.5;
+};
+
 module.exports = coords;
