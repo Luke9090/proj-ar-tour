@@ -8,7 +8,7 @@ const ARloc = require('./js/PortalWithSidebar');
 
 class App extends Component {
   state = {
-    page: 'ARloc',
+    page: 'splash',
     subpage: null
   };
 
