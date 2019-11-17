@@ -1,24 +1,11 @@
 import React, { Component } from 'react';
 import Splash from './js/Splash';
-import { StyleSheet, View, Dimensions } from 'react-native';
-// import ARnav from './js/ARnav';
+import { View } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import LocationsMap from './js/LocationsMap';
 
 const ARnav = require('./js/ARnav');
 const ARloc = require('./js/PortalWithSidebar');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  arNav: {
-    height: Math.round(Dimensions.get('window').height * 0.7)
-  },
-  map: {
-    height: Math.round(Dimensions.get('window').height * 0.3)
-  },
-});
 
 class App extends Component {
   state = {
@@ -38,20 +25,17 @@ class App extends Component {
         return <Splash changePage={this.changePage} />;
       case 'ARnav':
         return (
-          <View style={styles.container}>
+          <View style={{ flex: 1 }}>
             <ViroARSceneNavigator 
               viroAppProps={sharedProps} 
               initialScene={{ scene: ARnav }} 
               worldAlignment={'GravityAndHeading'}
-              style={styles.arNav}
             />
-            <LocationsMap style={styles.map}/>
+            <LocationsMap />
           </View> 
         );
       case 'ARloc':
-        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'GravityAndHeading'} />  
-      case 'map':
-        return <LocationsMap />
+        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'GravityAndHeading'} />
       default:
         return <Splash changePage={this.changePage} />;
     }

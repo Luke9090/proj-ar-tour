@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',  
   },
   background: {
-    height: Math.round(Dimensions.get('window').height * 0.3)
+    height: Math.round(Dimensions.get('window').height * 0.4)
   },
   mapPin: {
     width: 38,
