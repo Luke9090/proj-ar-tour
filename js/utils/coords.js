@@ -25,4 +25,17 @@ coords.distanceToModel = (currLoc, modelLoc) => {
   return Math.round((deltaX ** 2 + deltaY ** 2) ** 0.5);
 };
 
+coords.findHeading = (start, end) => {
+  // nominally heading West [0,-1]
+  const x = end[0] - start[0];
+  const z = end[1] - start[1];
+  console.log('x=', x, 'z=', z);
+  const atanRes = Math.atan(x / z);
+  console.log(end, atanRes / Math.PI);
+  if (x === 0) return z < 0 ? 0 : Math.PI; // If x is 0, heading is due West or East
+  if (z === 0) return x > 0 ? -Math.PI / 2 : Math.PI / 2; // If z is 0, heading is due North or South
+  if (z < 0) return atanRes;
+  return x > 0 ? atanRes - Math.PI : atanRes + Math.PI;
+};
+
 module.exports = coords;
