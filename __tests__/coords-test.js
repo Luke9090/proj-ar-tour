@@ -50,13 +50,13 @@ describe('findHeading', () => {
   it('returns a correct bearing from West when passed coordinates giving a cardinal direction', () => {
     expect(findHeading([1, 1], [1, 2])).toBe(PI); // East
     expect(findHeading([1, 1], [1, 0])).toBe(0); // West
-    expect(findHeading([1, 1], [2, 1])).toBe(-PI / 2); // North
-    expect(findHeading([1, 1], [0, 1])).toBe(PI / 2); // South
+    expect(findHeading([1, 1], [2, 1])).toBe(PI / 2); // North
+    expect(findHeading([1, 1], [0, 1])).toBe(PI * 1.5); // South
   });
   it('returns a correct bearing from West when passed coordinates giving an intercardinal direction', () => {
-    expect(findHeading([1, 1], [0, 0])).toBe(PI * 0.25); // SW
-    expect(findHeading([1, 1], [2, 0])).toBe(-PI * 0.25); // NW
-    expect(findHeading([1, 1], [2, 2])).toBe(-PI * 0.75); // NE
-    expect(findHeading([1, 1], [0, 2])).toBe(PI * 0.75); // SE
+    expect(findHeading([1, 1], [0, 0])).toBe(PI * 1.75); // SW
+    expect(findHeading([1, 1], [2, 0])).toBe(PI * 0.25); // NW
+    expect(findHeading([1, 1], [2, 2])).toBe(PI * 0.75); // NE
+    expect(findHeading([1, 1], [0, 2])).toBe(PI * 1.25); // SE
   });
 });
