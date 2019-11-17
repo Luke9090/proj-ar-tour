@@ -23,7 +23,8 @@ export default class HelloWorldSceneAR extends Component {
       { latLon: [53.485979, -1.239815], name: 'East' },
       { latLon: [53.485979, -3.239815], name: 'West' }
     ],
-    initialized: 'pending'
+    initialized: 'pending',
+    indoors: true
   };
 
   componentDidMount = () => {
@@ -37,23 +38,31 @@ export default class HelloWorldSceneAR extends Component {
     //   console.log,
     //   { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     // );
-    navigator.geolocation.watchPosition(
-      location => {
-        const { initialized, startPos, calPos } = this.state;
-        const { latitude, longitude } = location.coords;
-        const currPos = [latitude, longitude];
-        this.setState({ currPos });
-        if (initialized === 'success' && startPos)
-          this.setState(() => {
-            const travelled = distanceToModel(latLonToMerc(currPos), latLonToMerc(startPos));
-            if (calPos) return { currPos, travelled };
-            if (travelled > 10) return { currPos, travelled, calPos: currPos };
-          });
-        if (initialized === 'success' && !startPos) this.setState({ startPos: [latitude, longitude] });
-      },
-      console.log,
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 2 }
-    );
+    if (this.state.indoors) {
+      this.setState({
+        currPos: [53.486006, -2.239878],
+        startPos: [53.486006, -2.239878],
+        calPos: [53.485874, -2.239987]
+      });
+    } else {
+      navigator.geolocation.watchPosition(
+        location => {
+          const { initialized, startPos, calPos } = this.state;
+          const { latitude, longitude } = location.coords;
+          const currPos = [latitude, longitude];
+          this.setState({ currPos });
+          if (initialized === 'success' && startPos)
+            this.setState(() => {
+              const travelled = distanceToModel(latLonToMerc(currPos), latLonToMerc(startPos));
+              if (calPos) return { currPos, travelled };
+              if (travelled > 10) return { currPos, travelled, calPos: currPos };
+            });
+          if (initialized === 'success' && !startPos) this.setState({ startPos: [latitude, longitude] });
+        },
+        console.log,
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 2 }
+      );
+    }
   };
 
   render = () => {
