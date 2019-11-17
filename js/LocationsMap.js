@@ -3,11 +3,19 @@
 import React, { Component } from 'react';
 import { locations } from '../js/data/locations'
 
-import {StyleSheet, View, Text, ImageBackground, Image, Dimensions} from 'react-native';
+import {
+  StyleSheet, 
+  View, 
+  Text, 
+  ImageBackground, 
+  Image
+} from 'react-native';
+
 export default class LocationsMap extends Component {
 
   constructor() {
     super();
+
     this.state = {
       locations
     }
@@ -16,51 +24,42 @@ export default class LocationsMap extends Component {
   render() {
     const { locations } = this.state;
     return (
-        <ImageBackground source={require('./res/Manchester-Map-Small.png')} style={styles.background}>
-          <Text style={styles.locationsTextStyle}>Locations</Text>
+      <ImageBackground style={{ height: '100%' }} source={require('./res/Manchester-Map-Small.png')} >
 
-            {locations.map(location => {
-              const locationStyle = StyleSheet.create({
-                location: {
-                  position: 'absolute',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  width: '100%',
-                  left: location.left,
-                  top: location.top
-                }
-              })
-              return (
-                <View key={ location.name } style={ locationStyle.location }>
-                  <Image
-                    style={styles.mapPin}
-                    source={require('./res/mapPin.png')}
-                  />
-                  <Text style={styles.locationLabel}>{ location.name }</Text>
-                </View>
-              )
-            })}   
-        </ImageBackground>
-      
+          {locations.map(location => {
+            const locationStyle = StyleSheet.create({
+              location: {
+                position: 'absolute',
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                left: location.left,
+                top: location.top
+              }
+            })
+            return (
+              <View key={ location.name } style={ locationStyle.location }>
+                <Image
+                  style={styles.mapPin}
+                  source={require('./res/mapPin.png')}
+                />
+                <Text style={styles.locationLabel}>{ location.name }</Text>
+              </View>
+            )
+          })}  
+            
+      </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  locationsTextStyle: {
-    fontFamily: 'Arial',
-    fontSize: 16,
-    color: '#000',
-    textAlignVertical: 'center',
-    textAlign: 'center',  
-  },
-  background: {
-    height: Math.round(Dimensions.get('window').height * 0.4)
-  },
+ 
   mapPin: {
     width: 38,
     height: 35
   },
+
   locationLabel: {
     fontFamily: 'Arial',
     borderRadius: 10,
@@ -72,6 +71,7 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     backgroundColor: 'rgba(0, 0, 0, 0.4)'
   }
+
 });
 
 module.exports = LocationsMap;
