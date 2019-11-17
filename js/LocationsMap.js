@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { locations } from '../js/data/locations'
 
-import {StyleSheet, View, Text, ImageBackground, Image} from 'react-native';
+import {StyleSheet, View, Text, ImageBackground, Image, Dimensions} from 'react-native';
 export default class LocationsMap extends Component {
 
   constructor() {
@@ -16,10 +16,6 @@ export default class LocationsMap extends Component {
   render() {
     const { locations } = this.state;
     return (
-      <View style={styles.container}>
-        <View style={styles.arViewContainer}>
-          <Text style={styles.locationsTextStyle}>AR View container</Text>
-        </View>
         <ImageBackground source={require('./res/Manchester-Map-Small.png')} style={styles.background}>
           <Text style={styles.locationsTextStyle}>Locations</Text>
 
@@ -43,24 +39,14 @@ export default class LocationsMap extends Component {
                   <Text style={styles.locationLabel}>{ location.name }</Text>
                 </View>
               )
-            })}
-            
+            })}   
         </ImageBackground>
-      </View>
       
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  arViewContainer: {
-    width: '100%',
-    height: '50%',
-    backgroundColor: 'grey'
-  },
   locationsTextStyle: {
     fontFamily: 'Arial',
     fontSize: 16,
@@ -69,8 +55,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',  
   },
   background: {
-    flex: 1,
-    position: 'relative'
+    height: Math.round(Dimensions.get('window').height * 0.3)
   },
   mapPin: {
     width: 38,
