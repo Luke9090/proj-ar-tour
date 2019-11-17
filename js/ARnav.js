@@ -11,17 +11,23 @@ import { latLonToMerc, arPosFromMercs, distanceToModel } from './utils/coords';
 export default class HelloWorldSceneAR extends Component {
   state = {
     currPos: [53.485979, -2.239815],
-    locations: [{ latLon: [53.486233, -2.241182], name: 'corner' }]
+    locations: [
+      { latLon: [53.486249, -2.239237], name: 'danXhan' },
+      { latLon: [53.486233, -2.241182], name: 'corpXball' },
+      { latLon: [53.485789, -2.237766], name: 'rigaXhan' }
+    ],
+    initialized: 'pending'
   };
 
   componentDidMount = () => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        this.setState({ currPos: [latitude, longitude] });
-      },
-      console.log,
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
+    // navigator.geolocation.getCurrentPosition(
+    //   ({ coords: { latitude, longitude } }) => {
+    //     console.log('latLon from geoloc: ', latitude, longitude);
+    //     this.setState({ currPos: [latitude, longitude] });
+    //   },
+    //   console.log,
+    //   { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    // );
   };
 
   render = () => {
@@ -29,23 +35,34 @@ export default class HelloWorldSceneAR extends Component {
     const { locations, currPos } = this.state;
     return (
       <ViroARScene onTrackingUpdated={this._onInitialized}>
-        {locations.map(({ latLon, name }) => {
-          const objMercCoords = arPosFromMercs(latLon);
-          const currMercCoords = arPosFromMercs(currPos);
-          const arPos = arPosFromMercs(currMercCoords, objMercCoords);
-          const distance = distanceToModel(currMercCoords, objMercCoords);
-          <ViroText text={`${name} - ${distance}m`} scale={[50, 50, 50]} position={arPos} style={styles.helloWorldTextStyle} />;
-        })}
-        <ViroText text="Back" scale={[50, 50, 50]} position={[0, -20, -100]} style={styles.helloWorldTextStyle} onClick={() => changePage('splash')} />
+        {/* {locations.map(this.renderLocAsText)} */}
+        {this.renderLocAsText(locations[0])}
+        {this.renderLocAsText(locations[1])}
+        {this.renderLocAsText(locations[2])}
       </ViroARScene>
     );
   };
 
   _onInitialized = (state, reason) => {
     if (state == ViroConstants.TRACKING_NORMAL) {
+      this.setState({ initialized: 'success' });
     } else if (state == ViroConstants.TRACKING_NONE) {
-      // Handle loss of tracking
+      this.setState({ initialized: 'error' });
     }
+  };
+
+  renderLocAsText = ({ latLon, name }) => {
+    const { locations, currPos } = this.state;
+    console.log('name: ', name);
+    const objMercCoords = latLonToMerc(latLon);
+    console.log('objMercCoords: ', objMercCoords);
+    const currMercCoords = latLonToMerc(currPos);
+    console.log('currMercCoords: ', currMercCoords);
+    const arPos = arPosFromMercs(currMercCoords, objMercCoords);
+    console.log('arPos: ', arPos);
+    const distance = distanceToModel(currMercCoords, objMercCoords);
+    console.log('distance: ', distance);
+    return <ViroText key={name} text={`${name} ${distance}m`} scale={[50, 50, 50]} position={arPos} style={styles.helloWorldTextStyle} />;
   };
 }
 
