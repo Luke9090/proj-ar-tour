@@ -36,6 +36,7 @@ coords.findHeading = (start, end) => {
 };
 
 coords.mercsFromPolar = ([angle, distance], startPos) => {
+  if (angle < 0) angle += 2 * Math.PI;
   const x = startPos[0] + distance * Math.sin(angle);
   const z = startPos[2] - distance * Math.cos(angle);
   const y = startPos[1];
