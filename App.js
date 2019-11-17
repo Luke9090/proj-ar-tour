@@ -23,9 +23,9 @@ class App extends Component {
       case 'splash':
         return <Splash changePage={this.changePage} />;
       case 'ARnav':
-        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'GravityAndHeading'} />;
+        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'Gravity'} />;
       case 'ARloc':
-        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'GravityAndHeading'} />;
+        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'Gravity'} />;
       default:
         return <Splash changePage={this.changePage} />;
     }

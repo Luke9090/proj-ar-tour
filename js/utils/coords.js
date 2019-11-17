@@ -35,6 +35,11 @@ coords.findHeading = (start, end) => {
   return x > 0 ? atanRes + Math.PI / 2 : atanRes + Math.PI * 1.5;
 };
 
-coords.mercsFromPolar = ([angle, distance]) => {};
+coords.mercsFromPolar = ([angle, distance], startPos) => {
+  const x = startPos[0] + distance * Math.sin(angle);
+  const z = startPos[2] - distance * Math.cos(angle);
+  const y = startPos[1];
+  return [x, y, z];
+};
 
 module.exports = coords;
