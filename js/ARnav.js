@@ -24,7 +24,7 @@ export default class HelloWorldSceneAR extends Component {
       { latLon: [53.485979, -3.239815], name: 'West' }
     ],
     initialized: 'pending',
-    indoors: true
+    indoors: false
   };
 
   componentDidMount = () => {
@@ -42,7 +42,7 @@ export default class HelloWorldSceneAR extends Component {
       this.setState({
         currPos: [53.486006, -2.239878],
         startPos: [53.486006, -2.239878],
-        calPos: [53.485874, -2.239987]
+        calPos: [53.485874, -2.239987] // On line straight out of window towards balloon st.
       });
     } else {
       navigator.geolocation.watchPosition(
@@ -67,7 +67,7 @@ export default class HelloWorldSceneAR extends Component {
 
   render = () => {
     const { changePage } = this.props.sceneNavigator.viroAppProps;
-    const { locations, currPos } = this.state;
+    const { locations, currPos, calPos, startPos } = this.state;
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
         {calPos ? (
@@ -80,6 +80,7 @@ export default class HelloWorldSceneAR extends Component {
   };
 
   renderLocAsText = ({ latLon, name }) => {
+    console.log('--------------------------------------');
     const { locations, startPos, calPos } = this.state;
     console.log('name: ', name);
     const objMercCoords = latLonToMerc(latLon);
@@ -91,10 +92,15 @@ export default class HelloWorldSceneAR extends Component {
     const distance = distanceToModel(startMercCoords, objMercCoords);
     console.log('distance: ', distance);
     const calMerc = latLonToMerc(calPos);
+    console.log('calMerc: ', calMerc);
     const trueHeadingFromWest = findHeading(startMercCoords, calMerc);
-    const objPolarAngle = findHeading([0, 0], [arPos[0], arPos[2]]);
+    console.log('trueHeadingFromWest: ', trueHeadingFromWest);
+    const objPolarAngle = findHeading(startMercCoords, objMercCoords);
+    console.log('objPolarAngle: ', objPolarAngle);
     const newPolarCoords = [objPolarAngle - trueHeadingFromWest, distance];
+    console.log('newPolarCoords: ', newPolarCoords);
     const newArPos = mercsFromPolar(newPolarCoords, startPos);
+    console.log('newArPos: ', newArPos);
     return (
       <ViroText
         key={name}
@@ -109,8 +115,10 @@ export default class HelloWorldSceneAR extends Component {
 
   onInitialized = (state, reason) => {
     if (state == ViroConstants.TRACKING_NORMAL) {
+      console.log('succesful initialization');
       this.setState({ initialized: 'success' });
     } else if (state == ViroConstants.TRACKING_NONE) {
+      console.log('initialization error');
       this.setState({ initialized: 'error' });
     }
   };

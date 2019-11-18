@@ -27,19 +27,21 @@ coords.distanceToModel = (currLoc, modelLoc) => {
 
 coords.findHeading = (start, end) => {
   // nominally heading West [0,-1]
+  const PI = Math.PI;
   const x = end[0] - start[0];
   const z = end[1] - start[1];
   const atanRes = Math.atan(x / z);
-  if (x === 0) return z < 0 ? 0 : Math.PI; // If x is 0, heading is due West or East
-  if (z === 0) return x > 0 ? Math.PI / 2 : Math.PI * 1.5; // If z is 0, heading is due North or South
-  return x > 0 ? atanRes + Math.PI / 2 : atanRes + Math.PI * 1.5;
+  if (x === 0) return z < 0 ? 0 : PI; // If x is 0, heading is due West or East
+  if (z === 0) return x > 0 ? PI / 2 : PI * 1.5; // If z is 0, heading is due North or South
+  if (x > 0) return z < 0 ? -atanRes : PI - atanRes;
+  return z < 0 ? PI * 2 - atanRes : PI - atanRes;
 };
 
 coords.mercsFromPolar = ([angle, distance], startPos) => {
   if (angle < 0) angle += 2 * Math.PI;
   const x = startPos[0] + distance * Math.sin(angle);
-  const z = startPos[2] - distance * Math.cos(angle);
-  const y = startPos[1];
+  const z = startPos[1] - distance * Math.cos(angle);
+  const y = 0;
   return [x, y, z];
 };
 
