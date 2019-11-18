@@ -8,7 +8,8 @@ import {
   View, 
   Text, 
   ImageBackground, 
-  Image
+  Image,
+  Dimensions
 } from 'react-native';
 
 export default class LocationsMap extends Component {
@@ -23,8 +24,9 @@ export default class LocationsMap extends Component {
 
   render() {
     const { locations } = this.state;
+    // const mapHeight = Math.round(Dimensions.get('window').height * 0.33);
     return (
-      <ImageBackground style={{ height: '100%' }} source={require('./res/Manchester-Map-Small.png')} >
+      <ImageBackground style={{ height: 250, width: '100%' }} source={require('./res/Manchester-Map-Small.png')} >
 
           {locations.map(location => {
             const locationStyle = StyleSheet.create({
