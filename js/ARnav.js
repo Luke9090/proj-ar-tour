@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 
 import { ViroARScene, ViroText, ViroConstants } from 'react-viro';
 
-import { latLonToMerc, arPosFromMercs, distanceToModel, findHeading, mercsFromPolar } from './utils/coords';
+import { latLonToMerc, distanceToModel, findHeading, mercsFromPolar } from './utils/coords';
 
 export default class ARnav extends Component {
   state = {
@@ -21,7 +21,7 @@ export default class ARnav extends Component {
       { latLon: [53.486233, -2.241182], name: 'corpXball' }
     ],
     initialized: 'pending',
-    indoors: false
+    indoors: true
   };
 
   componentDidMount = () => {
@@ -86,11 +86,12 @@ export default class ARnav extends Component {
     const objPolarAngle = findHeading(startPosMerc, objMercCoords);
     const newPolarCoords = [objPolarAngle - trueHeading, distance];
     const newArPos = mercsFromPolar(newPolarCoords);
+    const scale = distance ** 2 / (currDistance * 4);
     return (
       <ViroText
         key={name}
         text={`${name} ${currDistance}m`}
-        scale={[distance / 4, distance / 4, distance / 4]}
+        scale={[scale, scale, scale]}
         position={newArPos}
         style={styles.helloWorldTextStyle}
         transformBehaviors={['billboard']}
