@@ -36,14 +36,16 @@ export default class ARnavMap extends Component {
   }
  
   render() {
+    const sharedProps = { changePage: this.props.changePage };
     return (
       <View style={ styles.container }>
 
         <View style={ styles.arNavContainer }>
 
-          <ViroARSceneNavigator 
+          <ViroARSceneNavigator
+            viroAppProps={sharedProps}
             initialScene={{ scene: ARnav }} 
-            worldAlignment={'GravityAndHeading'}
+            worldAlignment={'Gravity'}
           />
           <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.Btn}>
             <Text style={styles.btnText}>Expand / Collapse</Text>

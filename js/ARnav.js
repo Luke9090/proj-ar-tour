@@ -12,10 +12,11 @@ export default class HelloWorldSceneAR extends Component {
   };
 
   render = () => {
+    const { changePage } = this.props.sceneNavigator.viroAppProps;
     return (
       <ViroARScene onTrackingUpdated={this._onInitialized}>
         <ViroText text={this.state.text} scale={[50, 50, 50]} position={[0, 0, -100]} style={styles.helloWorldTextStyle} />
-        {/* <ViroText text="Back" scale={[50, 50, 50]} position={[0, -20, -100]} style={styles.helloWorldTextStyle} onClick={() => changePage('splash')} /> */}
+        <ViroText text="Back" scale={[50, 50, 50]} position={[0, -20, -100]} style={styles.helloWorldTextStyle} onClick={() => changePage('splash')} />
       </ViroARScene>
     );
   };
