@@ -37,10 +37,10 @@ coords.findHeading = (start, end) => {
   return z < 0 ? PI * 2 - atanRes : PI - atanRes;
 };
 
-coords.mercsFromPolar = ([angle, distance], startPos) => {
+coords.mercsFromPolar = ([angle, distance]) => {
   if (angle < 0) angle += 2 * Math.PI;
-  const x = startPos[0] + distance * Math.sin(angle);
-  const z = startPos[1] - distance * Math.cos(angle);
+  const x = distance * Math.sin(angle);
+  const z = -distance * Math.cos(angle);
   const y = 0;
   return [x, y, z];
 };

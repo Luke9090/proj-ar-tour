@@ -8,103 +8,88 @@ import { ViroARScene, ViroText, ViroConstants } from 'react-viro';
 
 import { latLonToMerc, arPosFromMercs, distanceToModel, findHeading, mercsFromPolar } from './utils/coords';
 
-export default class HelloWorldSceneAR extends Component {
+export default class ARnav extends Component {
   state = {
-    startPos: null,
-    currPos: null,
-    calPos: null,
+    startPosMerc: null,
+    currPosMerc: null,
+    accuracy: null,
+    trueHeading: null,
     travelled: 0,
     locations: [
       { latLon: [53.486249, -2.239237], name: 'danXhan' },
       { latLon: [53.485789, -2.237766], name: 'rigaXhan' },
-      { latLon: [53.486233, -2.241182], name: 'corpXball' },
-      { latLon: [54.485979, -2.239815], name: 'North' },
-      { latLon: [52.485979, -2.239815], name: 'South' },
-      { latLon: [53.485979, -1.239815], name: 'East' },
-      { latLon: [53.485979, -3.239815], name: 'West' }
+      { latLon: [53.486233, -2.241182], name: 'corpXball' }
     ],
     initialized: 'pending',
     indoors: false
   };
 
   componentDidMount = () => {
-    // navigator.geolocation.getCurrentPosition(
-    //   location => {
-    //     const { latitude, longitude, altitude, heading } = location.coords;
-    //     console.log(location);
-    //     console.log('latLon from geoloc: ', latitude, longitude);
-    //     this.setState({ startPos: [latitude, longitude] });
-    //   },
-    //   console.log,
-    //   { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    // );
     if (this.state.indoors) {
       this.setState({
-        currPos: [53.486006, -2.239878],
-        startPos: [53.486006, -2.239878],
-        calPos: [53.485874, -2.239987] // On line straight out of window towards balloon st.
+        currPosMerc: latLonToMerc([53.486006, -2.239878]),
+        startPosMerc: latLonToMerc([53.486006, -2.239878]),
+        trueHeading: findHeading(latLonToMerc([53.486006, -2.239878]), latLonToMerc([53.485874, -2.239987]))
       });
     } else {
-      navigator.geolocation.watchPosition(
+      const watchID = navigator.geolocation.watchPosition(
         location => {
-          const { initialized, startPos, calPos } = this.state;
-          const { latitude, longitude } = location.coords;
-          const currPos = [latitude, longitude];
-          this.setState({ currPos });
-          if (initialized === 'success' && startPos)
+          const { initialized, startPosMerc, trueHeading } = this.state;
+          const { latitude, longitude, accuracy } = location.coords;
+          const newPos = [latitude, longitude];
+          const newPosMerc = latLonToMerc(newPos);
+          this.setState({ currPosMerc: newPosMerc, accuracy });
+          if (initialized === 'success' && startPosMerc)
             this.setState(() => {
-              const travelled = distanceToModel(latLonToMerc(currPos), latLonToMerc(startPos));
-              if (calPos) return { currPos, travelled };
-              if (travelled > 10) return { currPos, travelled, calPos: currPos };
+              const travelled = distanceToModel(newPosMerc, startPosMerc);
+              if (trueHeading) return { currPosMerc: newPosMerc, travelled };
+              if (travelled > 20) return { currPosMerc: newPosMerc, travelled, trueHeading: findHeading(startPosMerc, newPosMerc) };
             });
-          if (initialized === 'success' && !startPos) this.setState({ startPos: [latitude, longitude] });
+          if (initialized === 'success' && !startPosMerc && accuracy < 10) this.setState({ startPosMerc: newPosMerc });
         },
         console.log,
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 2 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, distanceFilter: 0.5 }
       );
+      this.setState({ watchID });
     }
+  };
+
+  componentWillUnmount = () => {
+    navigator.geolocation.clearWatch(this.state.watchID);
   };
 
   render = () => {
     const { changePage } = this.props.sceneNavigator.viroAppProps;
-    const { locations, currPos, calPos, startPos } = this.state;
+    const { locations, startPosMerc, accuracy, trueHeading } = this.state;
+    console.log(trueHeading);
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
-        {calPos ? (
+        {trueHeading ? (
           locations.map(this.renderLocAsText)
         ) : (
-          <ViroText text={startPos ? 'Walk this way' : 'Initializing'} position={[0, 0, -20]} style={styles.helloWorldTextStyle} scale={[3, 3, 3]} />
+          <ViroText
+            text={startPosMerc ? `Walk ${accuracy}` : `Initializing ${accuracy}`}
+            position={[0, 0, -20]}
+            style={styles.helloWorldTextStyle}
+            scale={[3, 3, 3]}
+          />
         )}
       </ViroARScene>
     );
   };
 
   renderLocAsText = ({ latLon, name }) => {
-    console.log('--------------------------------------');
-    const { locations, startPos, calPos } = this.state;
-    console.log('name: ', name);
+    const { currPosMerc, startPosMerc, trueHeading } = this.state;
     const objMercCoords = latLonToMerc(latLon);
-    console.log('objMercCoords: ', objMercCoords);
-    const startMercCoords = latLonToMerc(startPos);
-    console.log('startMercCoords: ', startMercCoords);
-    const arPos = arPosFromMercs(startMercCoords, objMercCoords);
-    console.log('arPos: ', arPos);
-    const distance = distanceToModel(startMercCoords, objMercCoords);
-    console.log('distance: ', distance);
-    const calMerc = latLonToMerc(calPos);
-    console.log('calMerc: ', calMerc);
-    const trueHeadingFromWest = findHeading(startMercCoords, calMerc);
-    console.log('trueHeadingFromWest: ', trueHeadingFromWest);
-    const objPolarAngle = findHeading(startMercCoords, objMercCoords);
-    console.log('objPolarAngle: ', objPolarAngle);
-    const newPolarCoords = [objPolarAngle - trueHeadingFromWest, distance];
-    console.log('newPolarCoords: ', newPolarCoords);
-    const newArPos = mercsFromPolar(newPolarCoords, startPos);
-    console.log('newArPos: ', newArPos);
+    const distance = distanceToModel(startPosMerc, objMercCoords);
+    const currDistance = distanceToModel(currPosMerc, objMercCoords);
+    const objPolarAngle = findHeading(startPosMerc, objMercCoords);
+    const newPolarCoords = [objPolarAngle - trueHeading, distance];
+    const newArPos = mercsFromPolar(newPolarCoords);
     return (
       <ViroText
         key={name}
-        text={`${name} ${distance}m`}
+        text={`${name} ${currDistance}m`}
         scale={[distance / 4, distance / 4, distance / 4]}
         position={newArPos}
         style={styles.helloWorldTextStyle}
@@ -122,10 +107,6 @@ export default class HelloWorldSceneAR extends Component {
       this.setState({ initialized: 'error' });
     }
   };
-
-  onCalibrated = angleAdj => {
-    this.setState({ angleAdj, calibrated: true });
-  };
 }
 
 const styles = StyleSheet.create({
@@ -138,4 +119,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = HelloWorldSceneAR;
+module.exports = ARnav;
