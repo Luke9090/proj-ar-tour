@@ -47,11 +47,12 @@ export default class ARnavMap extends Component {
             initialScene={{ scene: ARnav }} 
             worldAlignment={'Gravity'}
           />
-          <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.Btn}>
-            <Text style={styles.btnText}>Expand / Collapse</Text>
-          </TouchableOpacity>
-
+   
         </View> 
+
+        <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.btn}>
+          <Text style={styles.btnText}>Expand / Collapse</Text>
+        </TouchableOpacity>
 
         <View style={{
           ...styles.mapContainer,
@@ -78,11 +79,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
+  btn: {
+    flex: 0,
+    padding: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+
   mapContainer: {
     paddingTop: (Platform.OS === 'ios') ? 20 : 0,
     width: '100%'
   },
- 
+   
   text: {
     fontSize: 17,
     color: 'white',
@@ -95,8 +102,4 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
 
-  Btn: {
-    padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)'
-  }
 });
