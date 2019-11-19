@@ -27,7 +27,7 @@ export default class Arrival extends Component {
           <TouchableOpacity
             style={{ opacity: 1 }}
             onPress={() => {
-              changePage('split', 'ARportal', 'content');
+              changePage('split', 'portal', 'content');
             }}
           >
             <Text>ENTER VENUE!</Text>
