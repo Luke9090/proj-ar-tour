@@ -14,17 +14,7 @@ export default class ARportal extends Component {
 
   render() {
     const { isLoading, title, img, text, portalImg } = this.state;
-    return (
-      <ViroARScene>
-        {isLoading ? (
-          <ViroSpinner position={[0, 0, -2]} scale={[1, 1, 1]} />
-        ) : (
-          <>
-            <PortalScene portalImg={portalImg} />
-          </>
-        )}
-      </ViroARScene>
-    );
+    return <ViroARScene>{isLoading ? <ViroSpinner position={[0, 0, -2]} scale={[1, 1, 1]} /> : <PortalScene portalImg={portalImg} />}</ViroARScene>;
   }
 }
 
