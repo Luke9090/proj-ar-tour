@@ -7,21 +7,21 @@ class App extends Component {
     page: 'splash',
     ARpage: 'nav',
     panel: 'map',
-    location: 1
+    currLoc: 1
   };
 
-  changePage = (page = 'split', ARpage = 'nav', panel = 'map', location = 1) => {
-    this.setState({ page, ARpage, panel, location });
+  changePage = (page = 'split', ARpage = 'nav', panel = 'map', currLoc = 1) => {
+    this.setState({ page, ARpage, panel, currLoc });
   };
 
   render() {
-    const { page, ARpage, panel, location } = this.state;
+    const { page, ARpage, panel, currLoc } = this.state;
     const sharedProps = { changePage: this.changePage };
     switch (page) {
       case 'splash':
         return <Splash changePage={this.changePage} />;
       case 'split':
-        return <Split changePage={this.changePage} ARpage={ARpage} panel={panel} location={location} />;
+        return <Split changePage={this.changePage} ARpage={ARpage} panel={panel} currLoc={currLoc} />;
       default:
         return <Splash changePage={this.changePage} />;
     }

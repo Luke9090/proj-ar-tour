@@ -15,7 +15,7 @@ export default class ARnav extends Component {
     accuracy: null,
     trueHeading: null,
     travelled: 0,
-    locations: [
+    testLocations: [
       { latLon: [53.486249, -2.239237], name: 'danXhan' },
       { latLon: [53.485789, -2.237766], name: 'rigaXhan' },
       { latLon: [53.486233, -2.241182], name: 'corpXball' }
@@ -59,8 +59,8 @@ export default class ARnav extends Component {
   };
 
   render = () => {
-    const { changePage } = this.props.sceneNavigator.viroAppProps;
-    const { locations, startPosMerc, accuracy, trueHeading } = this.state;
+    const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
+    const { startPosMerc, accuracy, trueHeading } = this.state;
     console.log(trueHeading);
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
@@ -78,8 +78,9 @@ export default class ARnav extends Component {
     );
   };
 
-  renderLocAsText = ({ latLon, name }) => {
+  renderLocAsText = ({ coords, name }) => {
     const { currPosMerc, startPosMerc, trueHeading } = this.state;
+    const latLon = [coords._lat, coords._long];
     const objMercCoords = latLonToMerc(latLon);
     const distance = distanceToModel(startPosMerc, objMercCoords);
     const currDistance = distanceToModel(currPosMerc, objMercCoords);

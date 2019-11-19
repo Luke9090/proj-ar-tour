@@ -14,13 +14,19 @@ export default class Split extends Component {
     super();
 
     this.state = {
-      expanded: true
+      expanded: true,
+      locations: []
     };
 
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
+
+  componentDidMount = () => {
+    // fetch location data from backend - hardcoded for now
+    this.setState({ locations: require('./data/locations') });
+  };
 
   changeLayout = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -30,9 +36,9 @@ export default class Split extends Component {
   };
 
   render() {
-    const { changePage, ARpage, panel, location } = this.props;
-    const sharedProps = { changePage, location };
-    const { expanded } = this.state;
+    const { changePage, ARpage, panel, currLoc } = this.props;
+    const { expanded, locations } = this.state;
+    const sharedProps = { changePage, currLoc, locations };
     return (
       <View style={styles.container}>
         <View style={styles.arNavContainer}>
@@ -51,11 +57,11 @@ export default class Split extends Component {
             overflow: 'hidden'
           }}
         >
-          {panel === 'map' && <LocationsMap changePage={changePage} />}
+          {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} />}
 
-          {panel === 'arrival' && <Arrival changePage={changePage} />}
+          {panel === 'arrival' && <Arrival changePage={changePage} currLoc={currLoc} />}
 
-          {panel === 'content' && <Content changePage={changePage} />}
+          {panel === 'content' && <Content changePage={changePage} currLoc={currLoc} />}
         </View>
       </View>
     );

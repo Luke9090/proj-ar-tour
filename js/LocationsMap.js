@@ -1,35 +1,23 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { locations } from '../js/data/locations'
 
-import {
-  StyleSheet, 
-  View, 
-  Text, 
-  ImageBackground, 
-  Image,
-  Dimensions
-} from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, Image, Dimensions } from 'react-native';
 
 export default class LocationsMap extends Component {
-
   constructor() {
     super();
 
-    this.state = {
-      locations
-    }
+    this.state = {};
   }
 
   render() {
-    const { locations } = this.state;
+    const { locations } = this.props;
     const mapHeight = Math.round(Dimensions.get('window').height * 0.33);
     const mapWidth = Math.round(Dimensions.get('window').width);
     return (
-      <ImageBackground style={{ height: 250, width: '100%' }} source={require('./res/Manchester-Map-Small.png')} >
+      <ImageBackground style={{ height: 250, width: '100%' }} source={require('./res/Manchester-Map-Small.png')}>
         {locations.map(location => {
-
           const latBase = 53.471965; // latitude at bottom of map
           const longBase = 2.250271; // longitude at left of map
           const mapHeightInLat = 0.007624; // difference in latitude from top to bottom
@@ -51,23 +39,18 @@ export default class LocationsMap extends Component {
           });
 
           return (
-            <View key={ location.name } style={ locationStyle.location }>
-              <Image
-                style={styles.mapPin}
-                source={require('./res/mapPin.png')}
-              />
-              <Text style={styles.locationLabel}>{ location.name }</Text>
+            <View key={location.name} style={locationStyle.location}>
+              <Image style={styles.mapPin} source={require('./res/mapPin.png')} />
+              <Text style={styles.locationLabel}>{location.name}</Text>
             </View>
-          )
-        })}  
-            
+          );
+        })}
       </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
- 
   mapPin: {
     width: 38,
     height: 35
@@ -81,7 +64,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 4,
     textAlignVertical: 'center',
-    textAlign: 'center', 
+    textAlign: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)'
   }
 });
