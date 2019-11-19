@@ -40,7 +40,7 @@ export default class Split extends Component {
         </View>
 
         <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.btn}>
-          <Text style={styles.btnText}>Expand / Collapse</Text>
+          <Text style={styles.btnText}>{expanded ? 'Collapse' : 'Expand'}</Text>
         </TouchableOpacity>
 
         <View
