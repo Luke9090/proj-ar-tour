@@ -7,10 +7,10 @@ class App extends Component {
     page: 'splash', // splash split
     ARpage: 'nav', // nav portal
     panel: 'map', // map arrival content
-    currLoc: 1
+    currLoc: null
   };
 
-  changePage = (page = 'split', ARpage = 'nav', panel = 'map', currLoc = 1) => {
+  changePage = (page = 'splash', ARpage = 'nav', panel = 'map', currLoc = null) => {
     this.setState({ page, ARpage, panel, currLoc });
   };
 
