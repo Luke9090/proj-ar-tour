@@ -21,7 +21,8 @@ export default class ARnav extends Component {
       { latLon: [53.486233, -2.241182], name: 'corpXball' }
     ],
     initialized: 'pending',
-    indoors: true
+    indoors: true,
+    triggerRadius: 20
   };
 
   componentDidMount = () => {
@@ -77,12 +78,15 @@ export default class ARnav extends Component {
     );
   };
 
-  renderLocAsText = ({ coords, name }) => {
-    const { currPosMerc, startPosMerc, trueHeading } = this.state;
+  renderLocAsText = ({ coords, name }, i) => {
+    const { changePage } = this.props.sceneNavigator.viroAppProps;
+    const { currPosMerc, startPosMerc, trueHeading, triggerRadius } = this.state;
     const latLon = [coords._lat, coords._long];
     const objMercCoords = latLonToMerc(latLon);
     const distance = distanceToModel(startPosMerc, objMercCoords);
     const currDistance = distanceToModel(currPosMerc, objMercCoords);
+    if (currDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
+    if (i === currLoc && currDistance > triggerRadius) changePage('split', 'nav', 'map', null);
     const objPolarAngle = findHeading(startPosMerc, objMercCoords);
     const newPolarCoords = [objPolarAngle - trueHeading, distance];
     const newArPos = mercsFromPolar(newPolarCoords);
