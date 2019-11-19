@@ -13,7 +13,7 @@ function Splash({ changePage }) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              changePage('split');
+              changePage('split', 'nav', 'map');
             }}
           >
             <Text style={styles.buttonText}>Start Tour</Text>
