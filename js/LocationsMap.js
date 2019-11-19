@@ -11,6 +11,36 @@ export default class LocationsMap extends Component {
     this.state = {};
   }
 
+  markCurrCoords = () => {
+    const { currCoords } = this.props;
+    const mapHeight = Math.round(Dimensions.get('window').height * 0.33);
+    const mapWidth = Math.round(Dimensions.get('window').width);
+    const latBase = 53.471965; // latitude at bottom of map
+    const longBase = 2.250271; // longitude at left of map
+    const mapHeightInLat = 0.007624; // difference in latitude from top to bottom
+    const mapWidthInLong = 0.019947; // diference in longitude from left to right
+    const latPixelRatio = mapHeightInLat / mapHeight; // height in latitude divided by height in pixels
+    const longPixelRatio = mapWidthInLong / mapWidth; // width in longitude divided by width in pixels
+    const latPixels = Math.round((currCoords[0] - latBase) / latPixelRatio); // actual latitude minus base latitude divided by pixel ratio to give pixels from left
+    const longPixels = Math.round((longBase + currCoords[1]) / longPixelRatio); // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
+
+    const locationStyle = StyleSheet.create({
+      location: {
+        position: 'absolute',
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        left: longPixels,
+        bottom: latPixels
+      }
+    });
+    return (
+      <View key={currLocDot} style={locationStyle.location}>
+        <Image style={styles.mapPin} source={require('./res/mapDot.png')} />
+      </View>
+    );
+  };
+
   render() {
     const { locations } = this.props;
     const mapHeight = Math.round(Dimensions.get('window').height * 0.33);
@@ -45,6 +75,7 @@ export default class LocationsMap extends Component {
             </View>
           );
         })}
+        {this.markCurrCoords()}
       </ImageBackground>
     );
   }

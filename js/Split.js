@@ -16,7 +16,8 @@ export default class Split extends Component {
     this.state = {
       expanded: true,
       locations: [],
-      isLoaded: false
+      isLoaded: false,
+      currCoords: []
     };
 
     if (Platform.OS === 'android') {
@@ -29,6 +30,10 @@ export default class Split extends Component {
     this.setState({ locations: require('./data/locations'), isLoaded: true });
   };
 
+  updateCurrCoords = currCoords => {
+    this.setState({ currCoords });
+  };
+
   changeLayout = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
@@ -38,8 +43,8 @@ export default class Split extends Component {
 
   render() {
     const { changePage, ARpage, panel, currLoc } = this.props;
-    const { expanded, locations, isLoaded } = this.state;
-    const sharedProps = { changePage, currLoc, locations };
+    const { expanded, locations, isLoaded, currCoords } = this.state;
+    const sharedProps = { changePage, currLoc, locations, updateCurrCoords: this.updateCurrCoords };
     if (isLoaded)
       return (
         <View style={styles.container}>
@@ -60,7 +65,7 @@ export default class Split extends Component {
             }}
           >
             {console.log(panel)}
-            {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} />}
+            {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} currCoords={currCoords} />}
 
             {panel === 'arrival' && <Arrival changePage={changePage} name={locations[currLoc].name} />}
 

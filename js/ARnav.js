@@ -26,6 +26,7 @@ export default class ARnav extends Component {
   };
 
   componentDidMount = () => {
+    const { updateCurrCoords } = this.props.sceneNavigator.viroAppProps;
     if (this.state.indoors) {
       this.setState({
         currPosMerc: latLonToMerc([53.486006, -2.239878]),
@@ -40,6 +41,7 @@ export default class ARnav extends Component {
           const newPos = [latitude, longitude];
           const newPosMerc = latLonToMerc(newPos);
           this.setState({ currPosMerc: newPosMerc, accuracy });
+          updateCurrCoords(newPos);
           if (initialized === 'success' && startPosMerc)
             this.setState(() => {
               const travelled = distanceToModel(newPosMerc, startPosMerc);
