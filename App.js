@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Splash from './js/Splash';
-// import ARnav from './js/ARnav';
 import { ViroARSceneNavigator } from 'react-viro';
+import ARnavMap from './js/ARnavMap';
 
-const ARnav = require('./js/ARnav');
 const ARloc = require('./js/PortalWithSidebar');
 
 class App extends Component {
@@ -12,7 +11,7 @@ class App extends Component {
     subpage: null
   };
 
-  changePage = (page = 'splash', subpage = 'null') => {
+  changePage = (page = 'ARnav', subpage = 'map') => {
     this.setState({ page, subpage });
   };
 
@@ -23,7 +22,7 @@ class App extends Component {
       case 'splash':
         return <Splash changePage={this.changePage} />;
       case 'ARnav':
-        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'Gravity'} />;
+        return <ARnavMap changePage={this.changePage} />;
       case 'ARloc':
         return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'Gravity'} />;
       default:
