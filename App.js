@@ -1,33 +1,27 @@
 import React, { Component } from 'react';
 import Splash from './js/Splash';
-import { ViroARSceneNavigator } from 'react-viro';
-import ARnavMap from './js/ARnavMap';
-
-const ARloc = require('./js/PortalWithSidebar');
+import Split from './js/Split';
 
 class App extends Component {
   state = {
     page: 'splash',
     ARpage: 'nav',
-    panel: 'map'
+    panel: 'map',
+    location: 1
   };
 
-  changePage = (page = 'ARnav', ARpage = 'nav', panel = 'map') => {
-    this.setState({ page, ARpage, panel });
+  changePage = (page = 'split', ARpage = 'nav', panel = 'map', location = 1) => {
+    this.setState({ page, ARpage, panel, location });
   };
 
   render() {
-    const { page, ARpage, panel } = this.state;
+    const { page, ARpage, panel, location } = this.state;
     const sharedProps = { changePage: this.changePage };
     switch (page) {
       case 'splash':
         return <Splash changePage={this.changePage} />;
       case 'split':
-        return <Split changePage={this.changePage} ARpage={ARpage} panel={panel} />;
-      case 'ARnav':
-        return <ARnavMap changePage={this.changePage} />;
-      case 'ARloc':
-        return <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARloc }} worldAlignment={'Gravity'} />;
+        return <Split changePage={this.changePage} ARpage={ARpage} panel={panel} location={location} />;
       default:
         return <Splash changePage={this.changePage} />;
     }
