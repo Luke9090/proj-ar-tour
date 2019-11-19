@@ -1,41 +1,33 @@
-"use strict";
+'use strict';
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import {
-  StyleSheet,
-  Text,
-  ImageBackground,
-  View,
-  TouchableOpacity
-} from "react-native";
+import { StyleSheet, Text, ImageBackground, View, TouchableOpacity } from 'react-native';
 
 export default class Arrival extends Component {
   constructor() {
     super();
 
-    this.state = {
-      arrival: "You have arrived."
-    };
+    this.state = {};
   }
 
   render() {
-    const { handleArrivalChange } = this.props;
+    const { changePage, name } = this.props;
     return (
-      <ImageBackground style={{ height: 300, width: "100%" }}>
+      <ImageBackground style={{ height: 300, width: '100%' }}>
         <View>
           <Text
             style={{
               fontSize: 30,
-              textAlign: "center"
+              textAlign: 'center'
             }}
           >
-            {this.state.arrival}
+            {`You have arrived at ${name}`}
           </Text>
           <TouchableOpacity
             style={{ opacity: 1 }}
             onPress={() => {
-              handleArrivalChange();
+              changePage('split', 'ARportal', 'content');
             }}
           >
             <Text>ENTER VENUE!</Text>
@@ -53,15 +45,15 @@ const styles = StyleSheet.create({
   },
 
   locationLabel: {
-    fontFamily: "Arial",
+    fontFamily: 'Arial',
     borderRadius: 10,
     fontSize: 14,
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     padding: 4,
-    textAlignVertical: "center",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.4)"
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)'
   }
 });
 

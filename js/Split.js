@@ -59,7 +59,7 @@ export default class Split extends Component {
         >
           {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} />}
 
-          {panel === 'arrival' && <Arrival changePage={changePage} currLoc={currLoc} />}
+          {panel === 'arrival' && <Arrival changePage={changePage} name={locations[currLoc].name} />}
 
           {panel === 'content' && <Content changePage={changePage} currLoc={currLoc} />}
         </View>
