@@ -20,10 +20,10 @@ export default class PortalScene extends Component {
     const { portalImg } = this.props;
     return (
       <>
-        {isLoading ? <ViroSpinner scale={[0.5, 0.5, 0.5]} position={[0, 0, -2.1]} rotationPivot={[0, 0, 2.1]} rotation={[0, -25, 0]} /> : null}
+        {isLoading ? <ViroSpinner scale={[0.5, 0.5, 0.5]} position={[0, 0, -2.1]} /> : null}
         <ViroAmbientLight color="#ffffff" intensity={200} />
         <ViroPortalScene passable={true} dragType="FixedDistance" onDrag={() => {}}>
-          <ViroPortal position={[0.4, 0, -1]} scale={[0.3, 0.3, 0.3]} position={[0, 0, -2.0]} rotationPivot={[0, 0, 2]} rotation={[0, -25, 0]}>
+          <ViroPortal scale={[0.6, 0.6, 0.6]} position={[0, 0, -2.0]}>
             <Viro3DObject
               source={require('./portals/portal_archway/portal_archway.vrx')}
               resources={[

@@ -7,7 +7,7 @@ const locations = [
     distances: {},
     name: 'Free Trade Hall',
     left: 10,
-    top: 10,
+    top: 10
   },
 
   {
@@ -18,7 +18,7 @@ const locations = [
     distances: {},
     name: 'Rafters',
     left: 50,
-    top: 50,
+    top: 50
   },
 
   {
@@ -29,7 +29,7 @@ const locations = [
     distances: {},
     name: 'Factory Records',
     left: 90,
-    top: 90,
+    top: 90
   },
 
   {
@@ -40,7 +40,7 @@ const locations = [
     distances: {},
     name: 'The Hacienda',
     left: 130,
-    top: 130,
+    top: 130
   },
 
   {
@@ -51,9 +51,8 @@ const locations = [
     distances: {},
     name: 'Twisted Wheel',
     left: 170,
-    top: 110,
-  },
-
+    top: 110
+  }
 ];
 
-module.exports = { locations }
+module.exports = locations;

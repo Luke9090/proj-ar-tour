@@ -15,7 +15,7 @@ export default class ARnav extends Component {
     accuracy: null,
     trueHeading: null,
     travelled: 0,
-    locations: [
+    testLocations: [
       { latLon: [53.486249, -2.239237], name: 'danXhan' },
       { latLon: [53.485789, -2.237766], name: 'rigaXhan' },
       { latLon: [53.486233, -2.241182], name: 'corpXball' }
@@ -59,9 +59,8 @@ export default class ARnav extends Component {
   };
 
   render = () => {
-    const { changePage } = this.props.sceneNavigator.viroAppProps;
-    const { locations, startPosMerc, accuracy, trueHeading } = this.state;
-    console.log(trueHeading);
+    const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
+    const { startPosMerc, accuracy, trueHeading } = this.state;
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
         {trueHeading ? (
@@ -78,8 +77,9 @@ export default class ARnav extends Component {
     );
   };
 
-  renderLocAsText = ({ latLon, name }) => {
+  renderLocAsText = ({ coords, name }) => {
     const { currPosMerc, startPosMerc, trueHeading } = this.state;
+    const latLon = [coords._lat, coords._long];
     const objMercCoords = latLonToMerc(latLon);
     const distance = distanceToModel(startPosMerc, objMercCoords);
     const currDistance = distanceToModel(currPosMerc, objMercCoords);
@@ -101,10 +101,8 @@ export default class ARnav extends Component {
 
   onInitialized = (state, reason) => {
     if (state == ViroConstants.TRACKING_NORMAL) {
-      console.log('succesful initialization');
       this.setState({ initialized: 'success' });
     } else if (state == ViroConstants.TRACKING_NONE) {
-      console.log('initialization error');
       this.setState({ initialized: 'error' });
     }
   };
