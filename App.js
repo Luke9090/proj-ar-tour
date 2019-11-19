@@ -4,9 +4,9 @@ import Split from './js/Split';
 
 class App extends Component {
   state = {
-    page: 'splash',
-    ARpage: 'nav',
-    panel: 'map',
+    page: 'splash', // splash split
+    ARpage: 'nav', // nav portal
+    panel: 'map', // map arrival content
     currLoc: 1
   };
 
@@ -16,7 +16,6 @@ class App extends Component {
 
   render() {
     const { page, ARpage, panel, currLoc } = this.state;
-    const sharedProps = { changePage: this.changePage };
     switch (page) {
       case 'splash':
         return <Splash changePage={this.changePage} />;
