@@ -61,7 +61,6 @@ export default class ARnav extends Component {
   render = () => {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
     const { startPosMerc, accuracy, trueHeading } = this.state;
-    console.log(trueHeading);
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
         {trueHeading ? (
@@ -102,10 +101,8 @@ export default class ARnav extends Component {
 
   onInitialized = (state, reason) => {
     if (state == ViroConstants.TRACKING_NORMAL) {
-      console.log('succesful initialization');
       this.setState({ initialized: 'success' });
     } else if (state == ViroConstants.TRACKING_NONE) {
-      console.log('initialization error');
       this.setState({ initialized: 'error' });
     }
   };
