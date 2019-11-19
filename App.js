@@ -8,19 +8,22 @@ const ARloc = require('./js/PortalWithSidebar');
 class App extends Component {
   state = {
     page: 'splash',
-    subpage: null
+    ARpage: 'nav',
+    panel: 'map'
   };
 
-  changePage = (page = 'ARnav', subpage = 'map') => {
-    this.setState({ page, subpage });
+  changePage = (page = 'ARnav', ARpage = 'nav', panel = 'map') => {
+    this.setState({ page, ARpage, panel });
   };
 
   render() {
-    const { page, subpage } = this.state;
+    const { page, ARpage, panel } = this.state;
     const sharedProps = { changePage: this.changePage };
     switch (page) {
       case 'splash':
         return <Splash changePage={this.changePage} />;
+      case 'split':
+        return <Split changePage={this.changePage} ARpage={ARpage} panel={panel} />;
       case 'ARnav':
         return <ARnavMap changePage={this.changePage} />;
       case 'ARloc':

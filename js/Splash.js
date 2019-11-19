@@ -5,13 +5,15 @@ function Splash({ changePage }) {
   return (
     <View style={styles.container}>
       <ImageBackground style={styles.background} source={require('../imgs/concert-background.jpg')}>
-        <Text style={styles.header}>Manchester Music Tour</Text>
-        <Text style={styles.text}>Welcome to the music tour of Manchester. Hit 'Start Tour' to see an overview of locations available to visit.</Text>
+        <Text style={styles.header}>Manchest-AR</Text>
+        <Text style={styles.text}>
+          Welcome to the music tour of Manchester. Point your phone along the pavement and hit 'Start Tour' to begin your journey.
+        </Text>
         <View style={styles.container2}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              changePage('ARnav');
+              changePage('split');
             }}
           >
             <Text style={styles.buttonText}>Start Tour</Text>
