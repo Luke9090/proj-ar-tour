@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { ViroARScene, ViroText, ViroConstants } from 'react-viro';
+import { ViroARScene, ViroText, ViroConstants, ViroMaterials, Viro3DObject, ViroAmbientLight } from 'react-viro';
 
 import { latLonToMerc, distanceToModel, findHeading, mercsFromPolar } from './utils/coords';
 
@@ -65,7 +65,10 @@ export default class ARnav extends Component {
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
         {trueHeading ? (
-          locations.map(this.renderLocAsText)
+          <>
+            <ViroAmbientLight color="#FFFFFF" />
+            {locations.map(this.renderLocAsText)}
+          </>
         ) : (
           <ViroText
             text={startPosMerc ? `Walk ${accuracy}` : `Initializing ${accuracy}`}
@@ -79,7 +82,7 @@ export default class ARnav extends Component {
   };
 
   renderLocAsText = ({ coords, name }, i) => {
-    const { changePage } = this.props.sceneNavigator.viroAppProps;
+    const { changePage, currLoc } = this.props.sceneNavigator.viroAppProps;
     const { currPosMerc, startPosMerc, trueHeading, triggerRadius } = this.state;
     const latLon = [coords._lat, coords._long];
     const objMercCoords = latLonToMerc(latLon);
@@ -92,14 +95,27 @@ export default class ARnav extends Component {
     const newArPos = mercsFromPolar(newPolarCoords);
     const scale = distance ** 2 / (currDistance * 4);
     return (
-      <ViroText
-        key={name}
-        text={`${name} ${currDistance}m`}
-        scale={[scale, scale, scale]}
-        position={newArPos}
-        style={styles.helloWorldTextStyle}
-        transformBehaviors={['billboard']}
-      />
+      <>
+        <Viro3DObject
+          key={'dome' + name}
+          source={require('../imgs/dome/glassdome2.obj')}
+          position={[newArPos[0], -triggerRadius, newArPos[2]]}
+          scale={[triggerRadius / 4, triggerRadius / 4, triggerRadius / 4]}
+          type="OBJ"
+          materials={['redDome']}
+          onError={e => {
+            console.log(e.nativeEvent.error);
+          }}
+        />
+        <ViroText
+          key={'text' + name}
+          text={`${name} ${currDistance}m`}
+          scale={[scale, scale, scale]}
+          position={[newArPos[0], triggerRadius, newArPos[2]]}
+          style={styles.helloWorldTextStyle}
+          transformBehaviors={['billboard']}
+        />
+      </>
     );
   };
 
@@ -111,6 +127,19 @@ export default class ARnav extends Component {
     }
   };
 }
+
+ViroMaterials.createMaterials({
+  dome: {
+    shininess: 2.0,
+    lightingModel: 'Blinn',
+    diffuseTexture: require('../imgs/dome/Sphere.png')
+  },
+  redDome: {
+    shininess: 2.0,
+    lightingModel: 'Blinn',
+    diffuseTexture: require('../imgs/dome/redSphere.png')
+  }
+});
 
 const styles = StyleSheet.create({
   helloWorldTextStyle: {
