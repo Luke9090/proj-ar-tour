@@ -15,7 +15,8 @@ export default class Split extends Component {
 
     this.state = {
       expanded: true,
-      locations: []
+      locations: [],
+      isLoaded: false
     };
 
     if (Platform.OS === 'android') {
@@ -25,7 +26,7 @@ export default class Split extends Component {
 
   componentDidMount = () => {
     // fetch location data from backend - hardcoded for now
-    this.setState({ locations: require('./data/locations') });
+    this.setState({ locations: require('./data/locations'), isLoaded: true });
   };
 
   changeLayout = () => {
@@ -37,34 +38,37 @@ export default class Split extends Component {
 
   render() {
     const { changePage, ARpage, panel, currLoc } = this.props;
-    const { expanded, locations } = this.state;
+    const { expanded, locations, isLoaded } = this.state;
     const sharedProps = { changePage, currLoc, locations };
-    return (
-      <View style={styles.container}>
-        <View style={styles.arNavContainer}>
-          {ARpage === 'nav' && <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'Gravity'} />}
-          {ARpage === 'portal' && <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARportal }} worldAlignment={'Gravity'} />}
+    if (isLoaded)
+      return (
+        <View style={styles.container}>
+          <View style={styles.arNavContainer}>
+            {ARpage === 'nav' && <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'Gravity'} />}
+            {ARpage === 'portal' && <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARportal }} worldAlignment={'Gravity'} />}
+          </View>
+
+          <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.btn}>
+            <Text style={styles.btnText}>{expanded ? 'Collapse' : 'Expand'}</Text>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              ...styles.mapContainer,
+              height: expanded ? null : 0,
+              overflow: 'hidden'
+            }}
+          >
+            {console.log(panel)}
+            {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} />}
+
+            {panel === 'arrival' && <Arrival changePage={changePage} name={locations[currLoc].name} />}
+
+            {panel === 'content' && <Content changePage={changePage} currLoc={currLoc} />}
+          </View>
         </View>
-
-        <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.btn}>
-          <Text style={styles.btnText}>{expanded ? 'Collapse' : 'Expand'}</Text>
-        </TouchableOpacity>
-
-        <View
-          style={{
-            ...styles.mapContainer,
-            height: expanded ? null : 0,
-            overflow: 'hidden'
-          }}
-        >
-          {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} />}
-
-          {panel === 'arrival' && <Arrival changePage={changePage} name={locations[currLoc].name} />}
-
-          {panel === 'content' && <Content changePage={changePage} currLoc={currLoc} />}
-        </View>
-      </View>
-    );
+      );
+    return null;
   }
 }
 
