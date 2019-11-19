@@ -7,6 +7,7 @@ import Content from './Content';
 import Arrival from './Arrival';
 
 const ARnav = require('./ARnav');
+const ARportal = require('./ARportal');
 
 export default class Split extends Component {
   constructor() {
@@ -29,8 +30,8 @@ export default class Split extends Component {
   };
 
   render() {
-    const { changePage, ARpage, panel } = this.props;
-    const sharedProps = { changePage };
+    const { changePage, ARpage, panel, location } = this.props;
+    const sharedProps = { changePage, location };
     const { expanded } = this.state;
     return (
       <View style={styles.container}>
