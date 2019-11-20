@@ -12,9 +12,9 @@ export default class LocationsMap extends Component {
   }
 
   markCurrCoords = () => {
-    const { currCoords } = this.props;
-    const mapHeight = Math.round(Dimensions.get('window').height * 0.33);
+    const currCoords = [53.477877, -2.246812];
     const mapWidth = Math.round(Dimensions.get('window').width);
+    const mapHeight = Math.round(mapWidth * (711 / 1121));
     const latBase = 53.471965; // latitude at bottom of map
     const longBase = 2.250271; // longitude at left of map
     const mapHeightInLat = 0.007624; // difference in latitude from top to bottom
@@ -29,24 +29,23 @@ export default class LocationsMap extends Component {
         position: 'absolute',
         display: 'flex',
         flexDirection: 'row',
-        width: '100%',
-        left: longPixels,
-        bottom: latPixels
+        left: longPixels - 5,
+        bottom: latPixels - 5
       }
     });
     return (
-      <View key={currLocDot} style={locationStyle.location}>
-        <Image style={styles.mapPin} source={require('./res/mapDot.png')} />
+      <View key={'currLocDot'} style={locationStyle.location}>
+        <Image style={styles.mapDot} source={require('./res/mapDot.png')} />
       </View>
     );
   };
 
   render() {
     const { locations } = this.props;
-    const mapHeight = Math.round(Dimensions.get('window').height * 0.33);
     const mapWidth = Math.round(Dimensions.get('window').width);
+    const mapHeight = Math.round(mapWidth * (711 / 1121));
     return (
-      <ImageBackground style={{ height: 250, width: '100%' }} source={require('./res/Manchester-Map-Small.png')}>
+      <ImageBackground style={{ height: mapHeight, width: mapWidth }} source={require('./res/Manchester-Map-Small.png')}>
         {locations.map(location => {
           const latBase = 53.471965; // latitude at bottom of map
           const longBase = 2.250271; // longitude at left of map
@@ -63,7 +62,7 @@ export default class LocationsMap extends Component {
               display: 'flex',
               flexDirection: 'row',
               width: '100%',
-              left: longPixels,
+              left: longPixels - 38 * (178 / 600),
               bottom: latPixels
             }
           });
@@ -86,7 +85,10 @@ const styles = StyleSheet.create({
     width: 38,
     height: 35
   },
-
+  mapDot: {
+    width: 10,
+    height: 10
+  },
   locationLabel: {
     fontFamily: 'Arial',
     borderRadius: 10,
