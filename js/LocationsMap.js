@@ -1,8 +1,15 @@
-'use strict';
+"use strict";
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { StyleSheet, View, Text, ImageBackground, Image, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  Dimensions
+} from "react-native";
 
 export default class LocationsMap extends Component {
   constructor() {
@@ -55,10 +62,15 @@ export default class LocationsMap extends Component {
           const mapWidthInLong = 0.019947; // diference in longitude from left to right
           const latPixelRatio = mapHeightInLat / mapHeight; // height in latitude divided by height in pixels
           const longPixelRatio = mapWidthInLong / mapWidth; // width in longitude divided by width in pixels
-          const latPixels = Math.round((location.coords._lat - latBase) / latPixelRatio); // actual latitude minus base latitude divided by pixel ratio to give pixels from left
-          const longPixels = Math.round((longBase + location.coords._long) / longPixelRatio); // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
+          const latPixels = Math.round(
+            (location.coords._lat - latBase) / latPixelRatio
+          ); // actual latitude minus base latitude divided by pixel ratio to give pixels from left
+          const longPixels = Math.round(
+            (longBase + location.coords._long) / longPixelRatio
+          ); // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
 
           const locationStyle = StyleSheet.create({
+
             pinLoc: {
               position: 'absolute',
               left: longPixels - 38 * (178 / 600),

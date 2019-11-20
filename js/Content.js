@@ -1,8 +1,16 @@
-'use strict';
+"use strict";
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { StyleSheet, View, Text, ImageBackground, Image, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+  ScrollView
+} from "react-native";
 
 export default class Content extends Component {
   constructor() {
@@ -16,37 +24,70 @@ export default class Content extends Component {
   componentDidMount = () => {
     // Placeholder for fetching specific location data from backend
     const { currLoc } = this.props;
-    this.setState({ content: require('./data/location') });
+    this.setState({ content: require("./data/location") });
   };
 
   render() {
     const { text } = this.state.content;
+    const { name, changePage } = this.props;
     return (
-      <ImageBackground style={{ height: 300, width: '100%' }}>
+      <View style={styles.window}>
         <ScrollView>
-          <Text style={{ fontSize: 20, textAlign: 'center' }}>{text}</Text>
+          <Text style={styles.title}>{`${name}`}</Text>
+
+          <Text style={styles.text}>{text}</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              changePage("split", "nav", "arrival");
+            }}
+          >
+            <Text style={styles.buttonText}>Back</Text>
+          </TouchableOpacity>
         </ScrollView>
-      </ImageBackground>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  mapPin: {
-    width: 38,
-    height: 35
+  window: {
+    height: 300,
+    width: "100%",
+    backgroundColor: "rgb(231, 231, 231)",
+    paddingTop: 0,
+    flexDirection: "column",
+    alignItems: "center"
   },
-
-  locationLabel: {
-    fontFamily: 'Arial',
+  title: {
+    fontSize: 25,
+    textAlign: "center",
+    paddingTop: 10
+  },
+  text: {
+    fontSize: 20,
+    textAlign: "justify",
+    padding: 20,
+    color: "black"
+  },
+  button: {
+    height: 30,
+    width: 60,
+    backgroundColor: "grey",
     borderRadius: 10,
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
-    padding: 4,
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)'
+    borderWidth: 1,
+    borderColor: "black",
+    margin: 10,
+    marginBottom: 40,
+    textAlignVertical: "center",
+    padding: 5,
+    alignSelf: "center"
+  },
+  buttonText: {
+    fontSize: 15,
+    color: "white",
+    textAlign: "center",
+    opacity: 1
   }
 });
 

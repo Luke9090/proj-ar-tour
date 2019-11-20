@@ -1,13 +1,21 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, LayoutAnimation, Platform, UIManager } from 'react-native';
+import React, { Component } from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  LayoutAnimation,
+  Platform,
+  UIManager
+} from "react-native";
 
-import { ViroARSceneNavigator } from 'react-viro';
-import LocationsMap from './LocationsMap';
-import Content from './Content';
-import Arrival from './Arrival';
+import { ViroARSceneNavigator } from "react-viro";
+import LocationsMap from "./LocationsMap";
+import Content from "./Content";
+import Arrival from "./Arrival";
 
-const ARnav = require('./ARnav');
-const ARportal = require('./ARportal');
+const ARnav = require("./ARnav");
+const ARportal = require("./ARportal");
 
 export default class Split extends Component {
   constructor() {
@@ -20,14 +28,14 @@ export default class Split extends Component {
       currCoords: []
     };
 
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
   }
 
   componentDidMount = () => {
     // fetch location data from backend - hardcoded for now
-    this.setState({ locations: require('./data/locations'), isLoaded: true });
+    this.setState({ locations: require("./data/locations"), isLoaded: true });
   };
 
   updateCurrCoords = currCoords => {
@@ -49,22 +57,39 @@ export default class Split extends Component {
       return (
         <View style={styles.container}>
           <View style={styles.arNavContainer}>
-            {ARpage === 'nav' && <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARnav }} worldAlignment={'Gravity'} />}
-            {ARpage === 'portal' && <ViroARSceneNavigator viroAppProps={sharedProps} initialScene={{ scene: ARportal }} worldAlignment={'Gravity'} />}
+            {ARpage === "nav" && (
+              <ViroARSceneNavigator
+                viroAppProps={sharedProps}
+                initialScene={{ scene: ARnav }}
+                worldAlignment={"Gravity"}
+              />
+            )}
+            {ARpage === "portal" && (
+              <ViroARSceneNavigator
+                viroAppProps={sharedProps}
+                initialScene={{ scene: ARportal }}
+                worldAlignment={"Gravity"}
+              />
+            )}
           </View>
 
-          <TouchableOpacity activeOpacity={0.8} onPress={this.changeLayout} style={styles.btn}>
-            <Text style={styles.btnText}>{expanded ? 'Collapse' : 'Expand'}</Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={this.changeLayout}
+            style={styles.btn}
+          >
+            <Text style={styles.btnText}>
+              {expanded ? "Collapse" : "Expand"}
+            </Text>
           </TouchableOpacity>
 
           <View
             style={{
               ...styles.mapContainer,
               height: expanded ? null : 0,
-              overflow: 'hidden'
+              overflow: "hidden"
             }}
           >
-            {console.log(panel)}
             {panel === 'map' && <LocationsMap changePage={changePage} locations={locations} currCoords={currCoords} />}
 
             {panel === 'arrival' && <Arrival changePage={changePage} name={locations[currLoc].name} />}
@@ -80,7 +105,8 @@ export default class Split extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 0
+    padding: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)"
   },
 
   arNavContainer: {
@@ -89,24 +115,24 @@ const styles = StyleSheet.create({
 
   btn: {
     flex: 0,
-    padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)'
+    paddingTop: 10
+    // backgroundColor: "rgba(0,0,0,0.5)"
   },
 
   mapContainer: {
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
-    width: '100%'
+    paddingTop: Platform.OS === "ios" ? 20 : 0,
+    width: "100%"
   },
 
   text: {
     fontSize: 17,
-    color: 'white',
-    padding: 10
+    color: "white",
+    paddingTop: 0
   },
 
   btnText: {
-    textAlign: 'center',
-    color: 'white',
+    textAlign: "center",
+    color: "white",
     fontSize: 20
   }
 });
