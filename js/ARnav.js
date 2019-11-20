@@ -97,7 +97,7 @@ export default class ARnav extends Component {
     const newArPos = mercsFromPolar(newPolarCoords);
     const scale = distance ** 2 / (currDistance * 4);
     return (
-      <>
+      <React.Fragment key={name}>
         <Viro3DObject
           key={'dome' + name}
           source={require('../imgs/dome/glassdome2.obj')}
@@ -117,7 +117,7 @@ export default class ARnav extends Component {
           style={styles.helloWorldTextStyle}
           transformBehaviors={['billboard']}
         />
-      </>
+      </React.Fragment>
     );
   };
 
