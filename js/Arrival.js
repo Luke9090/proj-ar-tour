@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   window: {
     // flex: 1,
     flexDirection: "column",
-    paddingTop: 20,
+    paddingTop: 40,
     height: 300,
     width: "100%",
     backgroundColor: "rgb(231, 231, 231)",
