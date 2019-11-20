@@ -23,8 +23,8 @@ export default class LocationsMap extends Component {
     const longPixelRatio = mapWidthInLong / mapWidth; // width in longitude divided by width in pixels
     const latPixels = Math.round((currCoords[0] - latBase) / latPixelRatio) - 5; // actual latitude minus base latitude divided by pixel ratio to give pixels from left
     const longPixels = Math.round((longBase + currCoords[1]) / longPixelRatio) - 5; // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
-    if (latPixels < 0 || latPixels === NaN || latPixels > mapHeight) return null;
-    if (longPixels < 0 || longPixels === NaN || longPixels > mapWidth) return null;
+    if (isNaN(latPixels) || latPixels < 0 || latPixels > mapHeight) return null;
+    if (isNaN(longPixels) || longPixels < 0 || longPixels > mapWidth) return null;
 
     const locationStyle = StyleSheet.create({
       location: {
