@@ -4,13 +4,13 @@ import Split from './js/Split';
 
 class App extends Component {
   state = {
-    page: 'splash', // splash split
-    ARpage: 'nav', // nav portal
-    panel: 'map', // map arrival content
-    currLoc: 1
+    page: 'splash', // OPTIONS: splash split - DEFAULT: splash
+    ARpage: 'nav', // OPTIONS: nav portal - DEFAULT: nav
+    panel: 'map', // OPTIONS: map arrival content - DEFAULT: map
+    currLoc: null // number - index of current location in locations array - DEFAULT: null
   };
 
-  changePage = (page = 'split', ARpage = 'nav', panel = 'map', currLoc = 1) => {
+  changePage = (page = 'splash', ARpage = 'nav', panel = 'map', currLoc = null) => {
     this.setState({ page, ARpage, panel, currLoc });
   };
 
