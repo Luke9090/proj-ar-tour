@@ -59,21 +59,32 @@ export default class LocationsMap extends Component {
           const longPixels = Math.round((longBase + location.coords._long) / longPixelRatio); // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
 
           const locationStyle = StyleSheet.create({
-            location: {
+            pinLoc: {
               position: 'absolute',
-              display: 'flex',
-              flexDirection: 'row',
-              width: '100%',
               left: longPixels - 38 * (178 / 600),
               bottom: latPixels
+            },
+            textLoc: {
+              position: 'absolute',
+              left: longPixels - 38 * (178 / 600) - 10,
+              bottom: latPixels - 20
+            },
+            textLocRt: {
+              position: 'absolute',
+              right: 10,
+              bottom: latPixels - 20
             }
           });
 
           return (
-            <View key={location.name} style={locationStyle.location}>
-              <Image style={styles.mapPin} source={require('./res/mapPin.png')} />
-              <Text style={styles.locationLabel}>{location.name}</Text>
-            </View>
+            <React.Fragment key={location.name}>
+              <View style={locationStyle.pinLoc}>
+                <Image style={styles.mapPin} source={require('./res/mapPin.png')} />
+              </View>
+              <View style={mapWidth - longPixels < 50 ? locationStyle.textLocRt : locationStyle.textLoc}>
+                <Text style={styles.locationLabel}>{location.name}</Text>
+              </View>
+            </React.Fragment>
           );
         })}
         {this.markCurrCoords()}
@@ -93,13 +104,10 @@ const styles = StyleSheet.create({
   },
   locationLabel: {
     fontFamily: 'Arial',
-    borderRadius: 10,
+    borderRadius: 5,
     fontSize: 14,
     color: '#fff',
     fontWeight: 'bold',
-    padding: 4,
-    textAlignVertical: 'center',
-    textAlign: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)'
   }
 });
