@@ -21,7 +21,8 @@ export default class Arrival extends Component {
     const { changePage, name } = this.props;
     return (
       <View style={styles.window}>
-        <View style={styles.box}>
+        <View>
+          {/* style={styles.box}> */}
           <Text style={styles.text}>{"You have arrived at:"}</Text>
           <Text style={styles.text1}>{`${name}`}</Text>
         </View>
@@ -39,22 +40,6 @@ export default class Arrival extends Component {
 }
 
 const styles = StyleSheet.create({
-  // mapPin: {
-  //   width: 38,
-  //   height: 35
-  // },
-
-  // locationLabel: {
-  //   fontFamily: "Arial",
-  //   borderRadius: 10,
-  //   fontSize: 14,
-  //   color: "#fff",
-  //   fontWeight: "bold",
-  //   padding: 4,
-  //   textAlignVertical: "center",
-  //   textAlign: "center",
-  //   backgroundColor: "rgba(0, 0, 0, 0.4)"
-  // },
   text: {
     color: "black",
     fontSize: 30,
@@ -69,7 +54,9 @@ const styles = StyleSheet.create({
   box: {
     borderWidth: 1,
     borderColor: "black",
-    padding: 20
+    padding: 20,
+    borderRadius: 5,
+    backgroundColor: "white"
   },
   window: {
     // flex: 1,
@@ -77,7 +64,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     height: 300,
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: "rgb(231, 231, 231)",
+
     alignItems: "center"
   },
   button: {
