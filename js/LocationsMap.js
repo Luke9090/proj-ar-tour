@@ -1,15 +1,8 @@
-"use strict";
+'use strict';
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  ImageBackground,
-  Image,
-  Dimensions
-} from "react-native";
+import { StyleSheet, View, Text, ImageBackground, Image, Dimensions } from 'react-native';
 
 export default class LocationsMap extends Component {
   constructor() {
@@ -28,8 +21,8 @@ export default class LocationsMap extends Component {
     const mapWidthInLong = 0.019947; // diference in longitude from left to right
     const latPixelRatio = mapHeightInLat / mapHeight; // height in latitude divided by height in pixels
     const longPixelRatio = mapWidthInLong / mapWidth; // width in longitude divided by width in pixels
-    const latPixels = Math.round((currCoords[0] - latBase) / latPixelRatio) - 5; // actual latitude minus base latitude divided by pixel ratio to give pixels from left
-    const longPixels = Math.round((longBase + currCoords[1]) / longPixelRatio) - 5; // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
+    const latPixels = Math.round((currCoords[0] - latBase) / latPixelRatio) - 10; // actual latitude minus base latitude divided by pixel ratio to give pixels from left
+    const longPixels = Math.round((longBase + currCoords[1]) / longPixelRatio) - 10; // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
     if (isNaN(latPixels) || latPixels < 0 || latPixels > mapHeight) return null;
     if (isNaN(longPixels) || longPixels < 0 || longPixels > mapWidth) return null;
 
@@ -62,15 +55,10 @@ export default class LocationsMap extends Component {
           const mapWidthInLong = 0.019947; // diference in longitude from left to right
           const latPixelRatio = mapHeightInLat / mapHeight; // height in latitude divided by height in pixels
           const longPixelRatio = mapWidthInLong / mapWidth; // width in longitude divided by width in pixels
-          const latPixels = Math.round(
-            (location.coords._lat - latBase) / latPixelRatio
-          ); // actual latitude minus base latitude divided by pixel ratio to give pixels from left
-          const longPixels = Math.round(
-            (longBase + location.coords._long) / longPixelRatio
-          ); // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
+          const latPixels = Math.round((location.coords._lat - latBase) / latPixelRatio); // actual latitude minus base latitude divided by pixel ratio to give pixels from left
+          const longPixels = Math.round((longBase + location.coords._long) / longPixelRatio); // actual longitude minus base longitude divided by pixel ratio to give pixels from bottom
 
           const locationStyle = StyleSheet.create({
-
             pinLoc: {
               position: 'absolute',
               left: longPixels - 38 * (178 / 600),
@@ -111,8 +99,8 @@ const styles = StyleSheet.create({
     height: 35
   },
   mapDot: {
-    width: 10,
-    height: 10
+    width: 20,
+    height: 20
   },
   locationLabel: {
     fontFamily: 'Arial',
