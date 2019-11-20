@@ -1,8 +1,15 @@
-'use strict';
+"use strict";
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { StyleSheet, View, Text, ImageBackground, Image, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  ScrollView
+} from "react-native";
 
 export default class Content extends Component {
   constructor() {
@@ -16,38 +23,52 @@ export default class Content extends Component {
   componentDidMount = () => {
     // Placeholder for fetching specific location data from backend
     const { currLoc } = this.props;
-    this.setState({ content: require('./data/location') });
+    this.setState({ content: require("./data/location") });
   };
 
   render() {
     const { text } = this.state.content;
+    const { name } = this.props;
     return (
-      <ImageBackground style={{ height: 300, width: '100%' }}>
+      <View style={styles.window}>
         <ScrollView>
-          <Text style={{ fontSize: 20, textAlign: 'center' }}>{text}</Text>
+          <Text>{`${name}`}</Text>
+
+          <Text style={styles.text}>{text}</Text>
         </ScrollView>
-      </ImageBackground>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  mapPin: {
-    width: 38,
-    height: 35
+  window: {
+    height: 300,
+    width: "100%",
+    backgroundColor: "white",
+    paddingTop: 0
   },
-
-  locationLabel: {
-    fontFamily: 'Arial',
-    borderRadius: 10,
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
-    padding: 4,
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)'
+  text: {
+    fontSize: 20,
+    textAlign: "justify",
+    padding: 20,
+    color: "black"
   }
+  // mapPin: {
+  //   width: 38,
+  //   height: 35
+  // },
+  // locationLabel: {
+  //   fontFamily: "Arial",
+  //   borderRadius: 10,
+  //   fontSize: 14,
+  //   color: "#fff",
+  //   fontWeight: "bold",
+  //   padding: 4,
+  //   textAlignVertical: "center",
+  //   textAlign: "center",
+  //   backgroundColor: "rgba(0, 0, 0, 0.4)"
+  // }
 });
 
 module.exports = Content;
