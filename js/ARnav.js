@@ -95,14 +95,21 @@ export default class ARnav extends Component {
     const objPolarAngle = findHeading(startPosMerc, objMercCoords);
     const newPolarCoords = [objPolarAngle - trueHeading, distance];
     const newArPos = mercsFromPolar(newPolarCoords);
-    const scale = distance ** 2 / (currDistance * 4);
+
+    const equalSizeRadius = 50;
+    const currRadius = currDistance > equalSizeRadius ? triggerRadius + (currDistance - equalSizeRadius) / 10 : triggerRadius;
+    const textHeight = currDistance > triggerRadius ? currRadius / 3 : 0;
+    const domeHeight = -currRadius / 2 - 1.6;
+    const domeScale = currRadius / 4; // Dome radius in metres appears to be approx 4 x the scale
+    const textScale = currDistance / 10;
+
+    // const scale = distance ** 2 / (currDistance * 4);
     return (
       <React.Fragment key={name}>
         <Viro3DObject
-          key={'dome' + name}
           source={require('../imgs/dome/glassdome2.obj')}
-          position={[newArPos[0], -triggerRadius, newArPos[2]]}
-          scale={[triggerRadius / 4, triggerRadius / 4, triggerRadius / 4]}
+          position={[newArPos[0], domeHeight, newArPos[2]]}
+          scale={[domeScale, domeScale, domeScale]}
           type="OBJ"
           materials={['redDome']}
           onError={e => {
@@ -110,11 +117,14 @@ export default class ARnav extends Component {
           }}
         />
         <ViroText
-          key={'text' + name}
-          text={`${name} ${currDistance}m`}
-          scale={[scale, scale, scale]}
-          position={[newArPos[0], triggerRadius, newArPos[2]]}
-          style={styles.helloWorldTextStyle}
+          text={`${name} - ${currDistance}m`}
+          scale={[textScale, textScale, textScale]}
+          position={[newArPos[0], textHeight, newArPos[2]]}
+          style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
+          outerStroke={{ type: 'Outline', width: 2, color: '#000000' }}
+          textClipMode="None"
+          textLineBreakMode="None"
+          textAlign="center"
           transformBehaviors={['billboard']}
         />
       </React.Fragment>
