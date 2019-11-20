@@ -1,16 +1,8 @@
-"use strict";
+'use strict';
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  ImageBackground,
-  Image,
-  TouchableOpacity,
-  ScrollView
-} from "react-native";
+import { StyleSheet, View, Text, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native';
 
 export default class Content extends Component {
   constructor() {
@@ -24,12 +16,12 @@ export default class Content extends Component {
   componentDidMount = () => {
     // Placeholder for fetching specific location data from backend
     const { currLoc } = this.props;
-    this.setState({ content: require("./data/location") });
+    this.setState({ content: require('./data/location') });
   };
 
   render() {
-    const { text } = this.state.content;
-    const { name, changePage } = this.props;
+    const { text, name } = this.state.content;
+    const { changePage } = this.props;
     return (
       <View style={styles.window}>
         <ScrollView>
@@ -39,7 +31,7 @@ export default class Content extends Component {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              changePage("split", "nav", "arrival");
+              changePage('split', 'nav', 'arrival');
             }}
           >
             <Text style={styles.buttonText}>Back</Text>
@@ -53,40 +45,40 @@ export default class Content extends Component {
 const styles = StyleSheet.create({
   window: {
     height: 300,
-    width: "100%",
-    backgroundColor: "rgb(231, 231, 231)",
+    width: '100%',
+    backgroundColor: 'rgb(231, 231, 231)',
     paddingTop: 0,
-    flexDirection: "column",
-    alignItems: "center"
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   title: {
     fontSize: 25,
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 10
   },
   text: {
     fontSize: 20,
-    textAlign: "justify",
+    textAlign: 'justify',
     padding: 20,
-    color: "black"
+    color: 'black'
   },
   button: {
     height: 30,
     width: 60,
-    backgroundColor: "grey",
+    backgroundColor: 'grey',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     margin: 10,
     marginBottom: 40,
-    textAlignVertical: "center",
+    textAlignVertical: 'center',
     padding: 5,
-    alignSelf: "center"
+    alignSelf: 'center'
   },
   buttonText: {
     fontSize: 15,
-    color: "white",
-    textAlign: "center",
+    color: 'white',
+    textAlign: 'center',
     opacity: 1
   }
 });
