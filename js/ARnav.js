@@ -39,16 +39,16 @@ export default class ARnav extends Component {
           const { initialized, startPosMerc, trueHeading } = this.state;
           const { latitude, longitude, accuracy } = location.coords;
           const newPos = [latitude, longitude];
+          updateCurrCoords(newPos);
           const newPosMerc = latLonToMerc(newPos);
           this.setState({ currPosMerc: newPosMerc, accuracy });
-          updateCurrCoords(newPos);
           if (initialized === 'success' && startPosMerc)
             this.setState(() => {
               const travelled = distanceToModel(newPosMerc, startPosMerc);
               if (trueHeading) return { currPosMerc: newPosMerc, travelled };
-              if (travelled > 20) return { currPosMerc: newPosMerc, travelled, trueHeading: findHeading(startPosMerc, newPosMerc) };
+              if (travelled > 30) return { currPosMerc: newPosMerc, travelled, trueHeading: findHeading(startPosMerc, newPosMerc) };
             });
-          if (initialized === 'success' && !startPosMerc && accuracy < 10) this.setState({ startPosMerc: newPosMerc });
+          if (initialized === 'success' && !startPosMerc && accuracy < 11) this.setState({ startPosMerc: newPosMerc });
         },
         console.log,
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, distanceFilter: 0.5 }
@@ -74,9 +74,9 @@ export default class ARnav extends Component {
         ) : (
           <ViroText
             text={startPosMerc ? `Walk ${accuracy}` : `Initializing ${accuracy}`}
-            position={[0, 0, -20]}
+            position={[0, 0, -40]}
             style={styles.helloWorldTextStyle}
-            scale={[3, 3, 3]}
+            scale={[4, 4, 4]}
           />
         )}
       </ViroARScene>
@@ -102,7 +102,6 @@ export default class ARnav extends Component {
     const domeHeight = -currRadius / 2 - 1.6;
     const domeScale = currRadius / 4; // Dome radius in metres appears to be approx 4 x the scale
     const textScale = currDistance / 10;
-
     // const scale = distance ** 2 / (currDistance * 4);
     return (
       <React.Fragment key={name}>
