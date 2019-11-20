@@ -22,7 +22,7 @@ export default class ARnav extends Component {
     ],
     initialized: 'pending',
     indoors: true,
-    triggerRadius: 20
+    triggerRadius: 30
   };
 
   componentDidMount = () => {
@@ -96,21 +96,17 @@ export default class ARnav extends Component {
     const newPolarCoords = [objPolarAngle - trueHeading, distance];
     const newArPos = mercsFromPolar(newPolarCoords);
 
-    const equalSizeRadius = 50;
-    const currRadius = currDistance > equalSizeRadius ? triggerRadius + (currDistance - equalSizeRadius) / 10 : triggerRadius;
-    const textHeight = currDistance > triggerRadius ? currRadius / 3 : 0;
-    const domeHeight = -currRadius / 2 - 1.6;
-    const domeScale = currRadius / 4; // Dome radius in metres appears to be approx 4 x the scale
-    const textScale = currDistance / 10;
-    // const scale = distance ** 2 / (currDistance * 4);
+    const arrowScale = 100;
+    const textScale = currDistance / 7;
     return (
       <React.Fragment key={name}>
         <Viro3DObject
-          source={require('../imgs/dome/glassdome2.obj')}
-          position={[newArPos[0], domeHeight, newArPos[2]]}
-          scale={[domeScale, domeScale, domeScale]}
+          source={require('../imgs/arrow/model.obj')}
+          resources={[require('../imgs/arrow/materials.mtl')]}
+          position={[newArPos[0], 200, newArPos[2]]}
+          rotation={[0, 0, 180]}
+          scale={[arrowScale, arrowScale, arrowScale]}
           type="OBJ"
-          materials={['redDome']}
           onError={e => {
             console.log(e.nativeEvent.error);
           }}
@@ -118,13 +114,14 @@ export default class ARnav extends Component {
         <ViroText
           text={`${name} - ${currDistance}m`}
           scale={[textScale, textScale, textScale]}
-          position={[newArPos[0], textHeight, newArPos[2]]}
+          position={[newArPos[0], 0, newArPos[2]]}
           style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
           outerStroke={{ type: 'Outline', width: 2, color: '#000000' }}
           textClipMode="None"
           textLineBreakMode="None"
           textAlign="center"
           transformBehaviors={['billboard']}
+          height={1}
         />
       </React.Fragment>
     );
@@ -138,19 +135,6 @@ export default class ARnav extends Component {
     }
   };
 }
-
-ViroMaterials.createMaterials({
-  dome: {
-    shininess: 2.0,
-    lightingModel: 'Blinn',
-    diffuseTexture: require('../imgs/dome/Sphere.png')
-  },
-  redDome: {
-    shininess: 2.0,
-    lightingModel: 'Blinn',
-    diffuseTexture: require('../imgs/dome/redSphere.png')
-  }
-});
 
 const styles = StyleSheet.create({
   helloWorldTextStyle: {
