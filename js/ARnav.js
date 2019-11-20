@@ -22,7 +22,8 @@ export default class ARnav extends Component {
     ],
     initialized: 'pending',
     indoors: true,
-    triggerRadius: 30
+    triggerRadius: 30,
+    currArPos: [0, 0, 0]
   };
 
   componentDidMount = () => {
@@ -65,7 +66,12 @@ export default class ARnav extends Component {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
     const { startPosMerc, accuracy, trueHeading } = this.state;
     return (
-      <ViroARScene onTrackingUpdated={this.onInitialized}>
+      <ViroARScene
+        onTrackingUpdated={this.onInitialized}
+        onCameraTransformUpdate={({ cameraTransform }) => {
+          this.setState({ currArPos: cameraTransform.position });
+        }}
+      >
         {trueHeading ? (
           <>
             <ViroAmbientLight color="#FFFFFF" />
@@ -85,19 +91,20 @@ export default class ARnav extends Component {
 
   renderLocAsText = ({ coords, name }, i) => {
     const { changePage, currLoc } = this.props.sceneNavigator.viroAppProps;
-    const { currPosMerc, startPosMerc, trueHeading, triggerRadius } = this.state;
+    const { currPosMerc, startPosMerc, trueHeading, triggerRadius, currArPos } = this.state;
     const latLon = [coords._lat, coords._long];
     const objMercCoords = latLonToMerc(latLon);
     const distance = distanceToModel(startPosMerc, objMercCoords);
-    const currDistance = distanceToModel(currPosMerc, objMercCoords);
-    if (currDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
-    if (i === currLoc && currDistance > triggerRadius) changePage('split', 'nav', 'map', null);
+    // const currDistance = distanceToModel(currPosMerc, objMercCoords);
     const objPolarAngle = findHeading(startPosMerc, objMercCoords);
     const newPolarCoords = [objPolarAngle - trueHeading, distance];
     const newArPos = mercsFromPolar(newPolarCoords);
+    const currArDistance = distanceToModel(currArPos, newArPos);
+    if (currArDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
+    if (i === currLoc && currArDistance > triggerRadius) changePage('split', 'nav', 'map', null);
 
     const arrowScale = 100;
-    const textScale = currDistance / 7;
+    const textScale = currArDistance / 7;
     return (
       <React.Fragment key={name}>
         <Viro3DObject
@@ -112,7 +119,7 @@ export default class ARnav extends Component {
           }}
         />
         <ViroText
-          text={`${name} - ${currDistance}m`}
+          text={`${name} - ${currArDistance}m`}
           scale={[textScale, textScale, textScale]}
           position={[newArPos[0], 0, newArPos[2]]}
           style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
