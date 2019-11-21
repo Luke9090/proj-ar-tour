@@ -24,11 +24,14 @@ export default class ARnav extends Component {
     indoors: false,
     test: false,
     triggerRadius: 30,
-    currArPos: [0, 0, 0]
+    currArPos: [0, 0, 0],
+    calDist: 60,
+    accThreshold: 10,
+    useArPos: false
   };
 
   componentDidMount = () => {
-    const { updateCurrCoords } = this.props.sceneNavigator.viroAppProps;
+    const { updateCurrCoords, useCompass } = this.props.sceneNavigator.viroAppProps;
     if (this.state.indoors) {
       this.setState({
         currPosMerc: latLonToMerc([53.477756, -2.244138]), // near fth
@@ -42,7 +45,7 @@ export default class ARnav extends Component {
     } else {
       const watchID = navigator.geolocation.watchPosition(
         location => {
-          const { initialized, startPosMerc, trueHeading } = this.state;
+          const { initialized, startPosMerc, trueHeading, accThreshold } = this.state;
           const { latitude, longitude, accuracy } = location.coords;
           const newPos = [latitude, longitude];
           updateCurrCoords(newPos);
@@ -52,9 +55,10 @@ export default class ARnav extends Component {
             this.setState(() => {
               const travelled = distanceToModel(newPosMerc, startPosMerc);
               if (trueHeading) return { currPosMerc: newPosMerc, travelled };
-              if (travelled > 30) return { currPosMerc: newPosMerc, travelled, trueHeading: findHeading(startPosMerc, newPosMerc) };
+              if (travelled > 0.8 * calDist && accuracy < accThreshold)
+                return { currPosMerc: newPosMerc, travelled, trueHeading: useCompass ? Math.PI / 2 : findHeading(startPosMerc, newPosMerc) };
             });
-          if (initialized === 'success' && !startPosMerc && accuracy < 11) this.setState({ startPosMerc: newPosMerc });
+          if (initialized === 'success' && !startPosMerc && accuracy < accThreshold) this.setState({ startPosMerc: newPosMerc });
         },
         console.log,
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, distanceFilter: 0.5 }
@@ -64,12 +68,12 @@ export default class ARnav extends Component {
   };
 
   componentWillUnmount = () => {
-    navigator.geolocation.clearWatch(this.state.watchID);
+    if (!this.state.indoors) navigator.geolocation.clearWatch(this.state.watchID);
   };
 
   render = () => {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
-    const { startPosMerc, accuracy, trueHeading, test, testLocations } = this.state;
+    const { startPosMerc, accuracy, trueHeading, test, testLocations, calDist } = this.state;
     console.log('accuracy: ', accuracy);
     return (
       <ViroARScene
@@ -86,13 +90,13 @@ export default class ARnav extends Component {
         ) : (
           <ViroText
             text={startPosMerc ? `Walk this way to calibrate` : `Initializing - Please wait`}
-            position={[0, 0, -40]}
+            position={[0, 0, -calDist]}
             style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
             outerStroke={{ type: 'Outline', width: 2, color: '#000000' }}
             textClipMode="None"
             textLineBreakMode="wordWrap"
             textAlign="center"
-            scale={[4, 4, 4]}
+            scale={[calDist / 10, calDist / 10, calDist / 10]}
           />
         )}
       </ViroARScene>
@@ -101,17 +105,20 @@ export default class ARnav extends Component {
 
   renderLocAsText = ({ coords, name }, i) => {
     const { changePage, currLoc } = this.props.sceneNavigator.viroAppProps;
-    const { currPosMerc, startPosMerc, trueHeading, triggerRadius, currArPos } = this.state;
+    const { currPosMerc, startPosMerc, trueHeading, triggerRadius, currArPos, useArPos } = this.state;
     const latLon = [coords._lat, coords._long];
     const objMercCoords = latLonToMerc(latLon);
     const distance = distanceToModel(startPosMerc, objMercCoords);
-    // const currDistance = distanceToModel(currPosMerc, objMercCoords);
+    const currGpsDistance = distanceToModel(currPosMerc, objMercCoords);
     const objPolarAngle = findHeading(startPosMerc, objMercCoords);
     const newPolarCoords = [objPolarAngle - trueHeading, distance];
     const newArPos = mercsFromPolar(newPolarCoords);
+
     const currArDistance = distanceToModel(currArPos, newArPos);
-    if (currArDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
-    if (i === currLoc && currArDistance > triggerRadius) changePage('split', 'nav', 'map', null);
+    const currDistance = useArPos ? currArDistance : currGpsDistance;
+
+    if (currDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
+    if (i === currLoc && currDistance > triggerRadius) changePage('split', 'nav', 'map', null);
 
     const arrowScale = 100;
     const textScale = currArDistance / 7;
@@ -130,7 +137,7 @@ export default class ARnav extends Component {
           }}
         />
         <ViroText
-          text={`${name} - ${currArDistance}m`}
+          text={`${name} - ${currDistance}m`}
           scale={[textScale, textScale, textScale]}
           position={[newArPos[0], 0, newArPos[2]]}
           style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
