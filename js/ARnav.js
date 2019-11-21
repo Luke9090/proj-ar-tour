@@ -98,12 +98,13 @@ export default class ARnav extends Component {
 
     const arrowScale = 100;
     const textScale = currDistance / 7;
+    const arrowHeight = arrowScale / 2 + (textScale > 10 ? textScale / 2 : 10);
     return (
       <React.Fragment key={name}>
         <Viro3DObject
           source={require('../imgs/arrow/model.obj')}
           resources={[require('../imgs/arrow/materials.mtl')]}
-          position={[newArPos[0], 200, newArPos[2]]}
+          position={[newArPos[0], arrowHeight, newArPos[2]]}
           rotation={[0, 0, 180]}
           scale={[arrowScale, arrowScale, arrowScale]}
           type="OBJ"
