@@ -22,6 +22,7 @@ export default class ARnav extends Component {
     ],
     initialized: 'pending',
     indoors: true,
+    test: true,
     triggerRadius: 30,
     currArPos: [0, 0, 0]
   };
@@ -68,7 +69,8 @@ export default class ARnav extends Component {
 
   render = () => {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
-    const { startPosMerc, accuracy, trueHeading } = this.state;
+    const { startPosMerc, accuracy, trueHeading, test, testLocations } = this.state;
+    if (test) locations = testLocations;
     return (
       <ViroARScene
         onTrackingUpdated={this.onInitialized}
