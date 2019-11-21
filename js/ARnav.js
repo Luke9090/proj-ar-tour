@@ -21,8 +21,8 @@ export default class ARnav extends Component {
       { coords: { _lat: 53.486233, _long: -2.241182 }, name: 'corpXball' }
     ],
     initialized: 'pending',
-    indoors: true,
-    test: true,
+    indoors: false,
+    test: false,
     triggerRadius: 30,
     currArPos: [0, 0, 0]
   };
