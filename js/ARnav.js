@@ -30,8 +30,12 @@ export default class ARnav extends Component {
     const { updateCurrCoords } = this.props.sceneNavigator.viroAppProps;
     if (this.state.indoors) {
       this.setState({
-        currPosMerc: latLonToMerc([53.486006, -2.239878]),
-        startPosMerc: latLonToMerc([53.486006, -2.239878]),
+        currPosMerc: latLonToMerc([53.477756, -2.244138]), // near fth
+        startPosMerc: latLonToMerc([53.477756, -2.244138]),
+        // currPosMerc: latLonToMerc([53.477967, -2.247045]), // at fth
+        // startPosMerc: latLonToMerc([53.477967, -2.247045]),
+        // currPosMerc: latLonToMerc([53.486006, -2.239878]), // nc
+        // startPosMerc: latLonToMerc([53.486006, -2.239878]),
         trueHeading: findHeading(latLonToMerc([53.486006, -2.239878]), latLonToMerc([53.485874, -2.239987]))
       });
     } else {
@@ -105,12 +109,13 @@ export default class ARnav extends Component {
 
     const arrowScale = 100;
     const textScale = currArDistance / 7;
+    const arrowHeight = arrowScale / 2 + (textScale > 10 ? textScale / 2 : 10);
     return (
       <React.Fragment key={name}>
         <Viro3DObject
           source={require('../imgs/arrow/model.obj')}
           resources={[require('../imgs/arrow/materials.mtl')]}
-          position={[newArPos[0], 200, newArPos[2]]}
+          position={[newArPos[0], arrowHeight, newArPos[2]]}
           rotation={[0, 0, 180]}
           scale={[arrowScale, arrowScale, arrowScale]}
           type="OBJ"
