@@ -70,6 +70,7 @@ export default class ARnav extends Component {
   render = () => {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
     const { startPosMerc, accuracy, trueHeading, test, testLocations } = this.state;
+    console.log('accuracy: ', accuracy);
     if (test) locations = testLocations;
     return (
       <ViroARScene
@@ -85,9 +86,13 @@ export default class ARnav extends Component {
           </>
         ) : (
           <ViroText
-            text={startPosMerc ? `Walk ${accuracy}` : `Initializing ${accuracy}`}
+            text={startPosMerc ? `Walk this way to calibrate` : `Initializing - Please wait`}
             position={[0, 0, -40]}
-            style={styles.helloWorldTextStyle}
+            style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
+            outerStroke={{ type: 'Outline', width: 2, color: '#000000' }}
+            textClipMode="None"
+            textLineBreakMode="wordWrap"
+            textAlign="center"
             scale={[4, 4, 4]}
           />
         )}
