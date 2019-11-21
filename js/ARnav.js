@@ -16,9 +16,9 @@ export default class ARnav extends Component {
     trueHeading: null,
     travelled: 0,
     testLocations: [
-      { latLon: [53.486249, -2.239237], name: 'danXhan' },
-      { latLon: [53.485789, -2.237766], name: 'rigaXhan' },
-      { latLon: [53.486233, -2.241182], name: 'corpXball' }
+      { coords: { _lat: 53.486249, _long: -2.239237 }, name: 'danXhan' },
+      { coords: { _lat: 53.485789, _long: -2.237766 }, name: 'rigaXhan' },
+      { coords: { _lat: 53.486233, _long: -2.241182 }, name: 'corpXball' }
     ],
     initialized: 'pending',
     indoors: true,
@@ -71,7 +71,6 @@ export default class ARnav extends Component {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
     const { startPosMerc, accuracy, trueHeading, test, testLocations } = this.state;
     console.log('accuracy: ', accuracy);
-    if (test) locations = testLocations;
     return (
       <ViroARScene
         onTrackingUpdated={this.onInitialized}
@@ -82,7 +81,7 @@ export default class ARnav extends Component {
         {trueHeading ? (
           <>
             <ViroAmbientLight color="#FFFFFF" />
-            {locations.map(this.renderLocAsText)}
+            {test ? testLocations.map(this.renderLocAsText) : locations.map(this.renderLocAsText)}
           </>
         ) : (
           <ViroText
