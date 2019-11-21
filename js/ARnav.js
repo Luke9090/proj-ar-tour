@@ -20,6 +20,7 @@ export default class ARnav extends Component {
       { coords: { _lat: 53.485789, _long: -2.237766 }, name: 'rigaXhan' },
       { coords: { _lat: 53.486233, _long: -2.241182 }, name: 'corpXball' }
     ],
+    locCoords: [],
     initialized: 'pending',
     indoors: false,
     test: false,
@@ -27,7 +28,9 @@ export default class ARnav extends Component {
     currArPos: [0, 0, 0],
     calDist: 60,
     accThreshold: 10,
-    useArPos: false
+    useArPos: false,
+    readyToRender: false,
+    ArScene: null
   };
 
   componentDidMount = () => {
@@ -45,20 +48,27 @@ export default class ARnav extends Component {
     } else {
       const watchID = navigator.geolocation.watchPosition(
         location => {
-          const { initialized, startPosMerc, trueHeading, accThreshold } = this.state;
+          const { locations } = this.props.sceneNavigator.viroAppProps;
+          const { initialized, startPosMerc, trueHeading, accThreshold, ArScene } = this.state;
           const { latitude, longitude, accuracy } = location.coords;
           const newPos = [latitude, longitude];
           updateCurrCoords(newPos);
           const newPosMerc = latLonToMerc(newPos);
           this.setState({ currPosMerc: newPosMerc, accuracy });
-          if (initialized === 'success' && startPosMerc)
-            this.setState(() => {
-              const travelled = distanceToModel(newPosMerc, startPosMerc);
-              if (trueHeading) return { currPosMerc: newPosMerc, travelled };
-              if (travelled > 0.8 * calDist && accuracy < accThreshold)
-                return { currPosMerc: newPosMerc, travelled, trueHeading: useCompass ? Math.PI / 2 : findHeading(startPosMerc, newPosMerc) };
-            });
+          if (initialized === 'success' && startPosMerc) {
+            const travelled = distanceToModel(newPosMerc, startPosMerc);
+            if (trueHeading) this.setState({ currPosMerc: newPosMerc, travelled });
+            if (travelled > 0.8 * calDist && accuracy < accThreshold)
+              this.setState(
+                { currPosMerc: newPosMerc, travelled, trueHeading: useCompass ? Math.PI / 2 : findHeading(startPosMerc, newPosMerc) },
+                this.calculateArCoords
+              );
+          }
           if (initialized === 'success' && !startPosMerc && accuracy < accThreshold) this.setState({ startPosMerc: newPosMerc });
+          if (ArScene)
+            ArScene.getCameraOrientationAsync().then(orientation => {
+              this.setState({ currArPos: orientation.position }, this.recalculateArDistances);
+            });
         },
         console.log,
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, distanceFilter: 0.5 }
@@ -67,29 +77,79 @@ export default class ARnav extends Component {
     }
   };
 
+  calculateArCoords = () => {
+    const { locations, currLoc } = this.props.sceneNavigator.viroAppProps;
+    this.setState(currState => {
+      const locCoords = locations.map(this.calculateArCoord);
+      return { readyToRender: true, locCoords };
+    });
+  };
+
+  calculateArCoord = ({ coords }, i) => {
+    const { currPosMerc, startPosMerc, trueHeading, triggerRadius, currArPos, useArPos } = this.state;
+    const latLon = [coords._lat, coords._long];
+    const objMercCoords = latLonToMerc(latLon);
+    const distance = distanceToModel(startPosMerc, objMercCoords);
+    const currGpsDistance = distanceToModel(currPosMerc, objMercCoords);
+    const objPolarAngle = findHeading(startPosMerc, objMercCoords);
+    const newPolarCoords = [objPolarAngle - trueHeading, distance];
+    const newArPos = mercsFromPolar(newPolarCoords);
+
+    const currArDistance = distanceToModel(currArPos, newArPos);
+    const currDistance = useArPos ? currArDistance : currGpsDistance;
+
+    return { newArPos, currDistance };
+  };
+
+  recalculateArDistances = () => {
+    const { locations } = this.props.sceneNavigator.viroAppProps;
+    this.setState(currState => {
+      const locCoords = locations.map(this.recalculateArDistance);
+      return { locCoords };
+    });
+  };
+
+  recalculateArDistance = (location, i) => {
+    const { currLoc, changePage } = this.props.sceneNavigator.viroAppProps;
+    const newArPos = this.state.locCoords[i].newArPos;
+
+    const { currPosMerc, startPosMerc, trueHeading, triggerRadius, currArPos, useArPos } = this.state;
+    const latLon = [coords._lat, coords._long];
+    const objMercCoords = latLonToMerc(latLon);
+    const currGpsDistance = distanceToModel(currPosMerc, objMercCoords);
+
+    const currArDistance = distanceToModel(currArPos, newArPos);
+    const currDistance = useArPos ? currArDistance : currGpsDistance;
+
+    if (currDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
+    if (i === currLoc && currDistance > triggerRadius) changePage('split', 'nav', 'map', null);
+
+    return { newArPos, currDistance };
+  };
+
   componentWillUnmount = () => {
     if (!this.state.indoors) navigator.geolocation.clearWatch(this.state.watchID);
   };
 
   render = () => {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
-    const { startPosMerc, accuracy, trueHeading, test, testLocations, calDist } = this.state;
+    const { startPosMerc, accuracy, trueHeading, test, testLocations, calDist, readyToRender } = this.state;
     console.log('accuracy: ', accuracy);
     return (
       <ViroARScene
         onTrackingUpdated={this.onInitialized}
-        onCameraTransformUpdate={({ cameraTransform }) => {
-          this.setState({ currArPos: cameraTransform.position });
+        ref={element => {
+          this.setState({ ArScene: element });
         }}
       >
-        {trueHeading ? (
+        {readyToRender ? (
           <>
             <ViroAmbientLight color="#FFFFFF" />
             {test ? testLocations.map(this.renderLocAsText) : locations.map(this.renderLocAsText)}
           </>
         ) : (
           <ViroText
-            text={startPosMerc ? `Walk this way to calibrate` : `Initializing - Please wait`}
+            text={trueHeading ? 'Calibration successful' : startPosMerc ? `Walk this way to calibrate` : `Initializing - Please wait`}
             position={[0, 0, -calDist]}
             style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
             outerStroke={{ type: 'Outline', width: 2, color: '#000000' }}
@@ -104,24 +164,10 @@ export default class ARnav extends Component {
   };
 
   renderLocAsText = ({ coords, name }, i) => {
-    const { changePage, currLoc } = this.props.sceneNavigator.viroAppProps;
-    const { currPosMerc, startPosMerc, trueHeading, triggerRadius, currArPos, useArPos } = this.state;
-    const latLon = [coords._lat, coords._long];
-    const objMercCoords = latLonToMerc(latLon);
-    const distance = distanceToModel(startPosMerc, objMercCoords);
-    const currGpsDistance = distanceToModel(currPosMerc, objMercCoords);
-    const objPolarAngle = findHeading(startPosMerc, objMercCoords);
-    const newPolarCoords = [objPolarAngle - trueHeading, distance];
-    const newArPos = mercsFromPolar(newPolarCoords);
-
-    const currArDistance = distanceToModel(currArPos, newArPos);
-    const currDistance = useArPos ? currArDistance : currGpsDistance;
-
-    if (currDistance < triggerRadius && i !== currLoc) changePage('split', 'nav', 'arrival', i);
-    if (i === currLoc && currDistance > triggerRadius) changePage('split', 'nav', 'map', null);
+    const { newArPos, currDistance } = this.state.locCoords[i];
 
     const arrowScale = 100;
-    const textScale = currArDistance / 7;
+    const textScale = currDistance / 7;
     const arrowHeight = arrowScale / 2 + (textScale > 10 ? textScale / 2 : 10);
     return (
       <React.Fragment key={name}>
