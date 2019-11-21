@@ -16,12 +16,13 @@ export default class Content extends Component {
   componentDidMount = () => {
     // Placeholder for fetching specific location data from backend
     const { currLoc } = this.props;
-    this.setState({ content: require('./data/location') });
+    const locData = require('./data/location')[currLoc];
+    this.setState({ content: locData });
   };
 
   render() {
     const { text, name } = this.state.content;
-    const { changePage } = this.props;
+    const { changePage, currLoc } = this.props;
     return (
       <View style={styles.window}>
         <ScrollView>
