@@ -23,17 +23,17 @@ export default class ARnav extends Component {
     locCoords: [],
     initialized: 'pending',
     indoors: false,
-    test: false,
+    test: true,
     triggerRadius: 30,
     currArPos: [0, 0, 0],
     calDist: 60,
     accThreshold: 10,
-    useArPos: false,
-    readyToRender: false,
-    ArScene: null
+    useArPos: true,
+    readyToRender: false
   };
 
   componentDidMount = () => {
+    this.ArScene = null;
     const { updateCurrCoords, useCompass } = this.props.sceneNavigator.viroAppProps;
     if (this.state.indoors) {
       this.setState({
@@ -49,7 +49,7 @@ export default class ARnav extends Component {
       const watchID = navigator.geolocation.watchPosition(
         location => {
           const { locations } = this.props.sceneNavigator.viroAppProps;
-          const { initialized, startPosMerc, trueHeading, accThreshold, ArScene } = this.state;
+          const { initialized, startPosMerc, trueHeading, accThreshold, readyToRender } = this.state;
           const { latitude, longitude, accuracy } = location.coords;
           const newPos = [latitude, longitude];
           updateCurrCoords(newPos);
@@ -65,8 +65,8 @@ export default class ARnav extends Component {
               );
           }
           if (initialized === 'success' && !startPosMerc && accuracy < accThreshold) this.setState({ startPosMerc: newPosMerc });
-          if (ArScene)
-            ArScene.getCameraOrientationAsync().then(orientation => {
+          if (this.ArScene && readyToRender)
+            this.ArScene.getCameraOrientationAsync().then(orientation => {
               this.setState({ currArPos: orientation.position }, this.recalculateArDistances);
             });
         },
@@ -133,13 +133,13 @@ export default class ARnav extends Component {
 
   render = () => {
     const { changePage, locations } = this.props.sceneNavigator.viroAppProps;
-    const { startPosMerc, accuracy, trueHeading, test, testLocations, calDist, readyToRender } = this.state;
+    const { startPosMerc, accuracy, trueHeading, test, testLocations, calDist, readyToRender, initialized } = this.state;
     console.log('accuracy: ', accuracy);
     return (
       <ViroARScene
         onTrackingUpdated={this.onInitialized}
         ref={element => {
-          this.setState({ ArScene: element });
+          this.ArScene = element;
         }}
       >
         {readyToRender ? (
@@ -149,12 +149,22 @@ export default class ARnav extends Component {
           </>
         ) : (
           <ViroText
-            text={trueHeading ? 'Calibration successful' : startPosMerc ? `Walk this way to calibrate` : `Initializing - Please wait`}
+            text={
+              trueHeading
+                ? 'Calibration successful'
+                : startPosMerc
+                ? `Walk this way to calibrate`
+                : initialized === 'success'
+                ? 'Finding location - Please wait'
+                : initialized === 'error'
+                ? 'Initialization error - Please restart app'
+                : `Initializing - Please wait`
+            }
             position={[0, 0, -calDist]}
             style={{ fontFamily: 'Arial', fontSize: 20, color: '#FFFFFF' }}
             outerStroke={{ type: 'Outline', width: 2, color: '#000000' }}
             textClipMode="None"
-            textLineBreakMode="wordWrap"
+            textLineBreakMode="WordWrap"
             textAlign="center"
             scale={[calDist / 10, calDist / 10, calDist / 10]}
           />
