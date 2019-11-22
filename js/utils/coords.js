@@ -21,8 +21,8 @@ coords.arPosFromMercs = (currLoc, modelLoc) => {
 coords.distanceToModel = (currLoc, modelLoc) => {
   const deltaX = modelLoc[0] - currLoc[0];
   const y = 0;
-  const deltaY = modelLoc[1] - currLoc[1];
-  return Math.round((deltaX ** 2 + deltaY ** 2) ** 0.5);
+  const deltaZ = modelLoc[modelLoc.length - 1] - currLoc[currLoc.length - 1];
+  return Math.round((deltaX ** 2 + deltaZ ** 2) ** 0.5);
 };
 
 coords.findHeading = (start, end) => {

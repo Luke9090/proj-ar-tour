@@ -34,7 +34,7 @@ export default class PortalScene extends Component {
               type="VRX"
             />
           </ViroPortal>
-          <Viro360Image source={portalImg} onLoadEnd={this.portalContentLoaded} />
+          <Viro360Image source={{ uri: portalImg }} onLoadEnd={this.portalContentLoaded} />
         </ViroPortalScene>
       </>
     );
