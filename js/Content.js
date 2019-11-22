@@ -32,7 +32,7 @@ export default class Content extends Component {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              changePage('splash', 'nav', 'arrival', currLoc);
+              changePage('splash', 'nav', 'arrival', currLoc ? 0 : 1);
             }}
           >
             <Text style={styles.buttonText}>Back</Text>

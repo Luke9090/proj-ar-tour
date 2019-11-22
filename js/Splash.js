@@ -11,7 +11,7 @@ function Splash({ changePage }) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              changePage('split', 'portal', 'content', 0);
+              changePage('split', 'portal', 'content');
             }}
           >
             <Text style={styles.buttonText}>Start Demo</Text>
