@@ -6,7 +6,7 @@ function Splash({ changePage }) {
     <View style={styles.container}>
       <ImageBackground style={styles.background} source={require('../imgs/concert-background.jpg')}>
         <Image style={styles.logo} source={require('../imgs/white-logo.png')} />
-        <Text style={styles.text}>Welcome to the portal demo mode. Point your phone's camera towards a few metres of free space and press 'Start Demo'.</Text>
+        <Text style={styles.text}>Welcome to the demo mode. Point the camera towards free space and press 'Start Demo'.</Text>
         <View style={styles.container2}>
           <TouchableOpacity
             style={styles.button}

@@ -7,10 +7,10 @@ class App extends Component {
     page: 'splash', // OPTIONS: splash split - DEFAULT: splash
     ARpage: 'nav', // OPTIONS: nav portal - DEFAULT: nav
     panel: 'map', // OPTIONS: map arrival content - DEFAULT: map
-    currLoc: 0 // number - index of current location in locations array - DEFAULT: null
+    currLoc: 1 // number - index of current location in locations array - DEFAULT: null
   };
 
-  changePage = (page = 'splash', ARpage = 'nav', panel = 'map', currLoc = 0) => {
+  changePage = (page = 'splash', ARpage = 'nav', panel = 'map', currLoc = this.state.currLoc ? 0 : 1) => {
     this.setState({ page, ARpage, panel, currLoc });
   };
 
