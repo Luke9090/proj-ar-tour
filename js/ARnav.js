@@ -23,7 +23,7 @@ export default class ARnav extends Component {
     locCoords: [],
     initialized: 'pending',
     indoors: false,
-    test: true,
+    test: false,
     triggerRadius: 30,
     currArPos: [0, 0, 0],
     calDist: 60,
