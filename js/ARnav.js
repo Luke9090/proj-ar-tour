@@ -57,8 +57,8 @@ export default class ARnav extends Component {
           this.setState({ currPosMerc: newPosMerc, accuracy });
           if (initialized === 'success' && startPosMerc) {
             const travelled = distanceToModel(newPosMerc, startPosMerc);
-            if (trueHeading) this.setState({ currPosMerc: newPosMerc, travelled });
-            if (travelled > 0.8 * calDist && accuracy < accThreshold)
+            if (trueHeading !== null) this.setState({ currPosMerc: newPosMerc, travelled });
+            else if (travelled > 0.8 * calDist && accuracy < accThreshold)
               this.setState(
                 { currPosMerc: newPosMerc, travelled, trueHeading: useCompass ? Math.PI / 2 : findHeading(startPosMerc, newPosMerc) },
                 this.calculateArCoords
