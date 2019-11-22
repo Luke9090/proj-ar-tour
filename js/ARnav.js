@@ -49,7 +49,7 @@ export default class ARnav extends Component {
       const watchID = navigator.geolocation.watchPosition(
         location => {
           const { locations } = this.props.sceneNavigator.viroAppProps;
-          const { initialized, startPosMerc, trueHeading, accThreshold, readyToRender } = this.state;
+          const { initialized, startPosMerc, trueHeading, accThreshold, readyToRender, calDist } = this.state;
           const { latitude, longitude, accuracy } = location.coords;
           const newPos = [latitude, longitude];
           updateCurrCoords(newPos);
@@ -79,8 +79,10 @@ export default class ARnav extends Component {
 
   calculateArCoords = () => {
     const { locations, currLoc } = this.props.sceneNavigator.viroAppProps;
+    const { testLocations, test } = this.state;
+    const usedLocations = test ? testLocations : locations;
     this.setState(currState => {
-      const locCoords = locations.map(this.calculateArCoord);
+      const locCoords = usedLocations.map(this.calculateArCoord);
       return { readyToRender: true, locCoords };
     });
   };
@@ -102,14 +104,16 @@ export default class ARnav extends Component {
   };
 
   recalculateArDistances = () => {
-    const { locations } = this.props.sceneNavigator.viroAppProps;
+    const { locations, currLoc } = this.props.sceneNavigator.viroAppProps;
+    const { testLocations, test } = this.state;
+    const usedLocations = test ? testLocations : locations;
     this.setState(currState => {
-      const locCoords = locations.map(this.recalculateArDistance);
+      const locCoords = usedLocations.map(this.recalculateArDistance);
       return { locCoords };
     });
   };
 
-  recalculateArDistance = (location, i) => {
+  recalculateArDistance = ({ coords }, i) => {
     const { currLoc, changePage } = this.props.sceneNavigator.viroAppProps;
     const newArPos = this.state.locCoords[i].newArPos;
 
